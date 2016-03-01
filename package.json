@@ -1,0 +1,23 @@
+{
+  "name": "passport_2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Connor Edwards",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "passport": "~0.3.2",
+    "passport-local": "~1.0.0",
+    "passport-http": "~0.3.0",
+    "body-parser": "~1.15.0",
+    "cookie-parser": "~1.4.1",
+    "express-session": "~1.13.0",
+    "mysql": "~2.10.2",
+    "xss-filters": "~1.2.6",
+    "validator": "~5.0.0",
+    "ejs": "~2.4.1"
+  }
+}

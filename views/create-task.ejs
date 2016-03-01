@@ -1,0 +1,86 @@
+<%- include('./includes/scripts.ejs'); %>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Minder - Create a new task</title>
+		<script type="text/javascript" src="js/save_task.js"></script>
+	</head>
+	<script type="text/javascript">
+		// Initialising the date picker
+		$(document).ready(function() {
+			$("#date_picker").datepicker({
+				minDate: 0
+			});
+		});
+	</script>
+	<body>
+
+		<%- include('./includes/menu.ejs'); %>
+	
+		<!-- main page container -->
+		<div class="container">
+
+			<!-- Page heading -->
+			<h1>
+				<span class="glyphicon glyphicon-edit pull-right" style="margin-right: 20px;"></span>
+				+ Create a new Task
+			</h1>
+			<hr />
+
+			<!-- First content row -->
+			<div class="row">
+
+				<!-- Container for creating a new task -->
+				<div class="col-md-8">
+					<h3>
+						Fill out the form to create a new task:
+					</h3><br />
+
+					<!-- Form for creating a new task -->
+					<form id="new_task">
+						<div class="form-group">
+							<label>Name:</label>
+							<input type="text" class="form-control" placeholder="Task name" name="task_name">
+						</div>
+						<div class="form-group">
+							<label>Description:</label>
+							<textarea class="form-control task_desc_tb" rows="3" placeholder="Task description..." name="task_desc"></textarea>
+						</div>
+						<div class="form-group">
+							<label>Intended Class:</label>
+							<select class="form-control" name="class">
+
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Due Date:</label>
+							<input type="text" class="form-control" name="task_due_date" id="date_picker" size="20">
+						</div>
+						<button type="submit" class="btn btn-primary" id="sub">
+							Save new task
+						</button>
+						<span class="save_status" style="margin-left: 10px;"></span>
+					</form>
+
+				</div>
+
+				<!-- Container for current classes -->
+				<div class="col-md-4">
+					<h3>
+						Currently set tasks 
+					</h3><br />
+
+					<div class="panel panel-default class_viewer">
+						<!-- Table for previewing the classes -->
+						<table class="table table-striped" style="font-size: 1em;" id="task_viewer">
+
+						</table>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</body>
+</html>

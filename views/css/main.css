@@ -1,0 +1,29 @@
+body {
+	background: url("../images/bg.png");
+}
+
+.err_msg {
+	color: rgba(255, 0, 0, 0.7);
+}
+
+button {
+	outline: none !important;
+}
+
+.class_viewer {
+	max-height: 250px;
+	min-height: auto;
+	overflow-y: auto;
+}
+
+.task_viewer {
+	max-height: 350px;
+	min-height: auto;
+	overflow-y: auto;
+}
+
+.task_desc_tb {
+	max-height: 200px;
+	min-height: 80px;
+	resize: vertical;
+}

@@ -1,0 +1,45 @@
+extends base
+
+block body
+	.container
+		.col-lg-4
+		.col-lg-4
+			div(id="show_noti", class="alert")
+			.panel.panel-default
+				.panel-heading
+					h4 Register your organisation
+				.panel-body
+					form(id="register", method="POST")
+						.form-group
+							label(for='org-name') Organisation Name: 
+							input.form-control(type='text', name='org_name', placeholder='Organisation Name', autocomplete='off' required)
+							hr
+				
+						.form-group
+							label(for='fname') Firstname: 
+							input.form-control(type='text', name='fname', placeholder='Firstname', autocomplete='off' required)
+
+						.form-group
+							label(for='lname') Lastname: 
+							input.form-control(type='text', name='lname', placeholder='Lastname', autocomplete='off' required)
+
+						.form-group
+							label(for='email') Email: 
+							input.form-control(type='email', name='email', placeholder='Email', autocomplete='off' required)
+
+						.form-group
+							label(for="password") Password:
+							input.form-control(type="password", name="password", placeholder="Password", autocomplete='off' required)
+
+						.form-group
+							label(for="password_conf") Password:
+							input.form-control(type="password", name="password_conf", placeholder="Confirm Password", autocomplete='off' required)
+
+						.form-group
+							p 	Already a member? <a href="/login">Login</a>
+								button.btn.pull-right.btn-primary(type="submit", id="reg_btn") Register
+
+		.col-lg-4
+
+	// Including the JavaScript
+	script(type='text/javascript' src='views/scripts/register.js')

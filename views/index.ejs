@@ -1,0 +1,82 @@
+<%- include('./includes/scripts.ejs'); %>
+
+<html>
+	<head>
+		<title><%= title %></title>
+	</head>
+	<body>
+
+	<%- include('./includes/menu.ejs'); %>
+
+		<!-- main page container -->
+		<div class="container">
+			<!-- Page heading -->
+			<h1>
+				<span class="glyphicon glyphicon-home pull-right" style="margin-right: 20px;"></span>
+				Dashboard
+			</h1>
+			<hr />
+
+			<!-- First content row -->
+			<div class="row">
+
+				<!-- Container for recent set tasks -->
+				<div class="col-md-8">
+					<h3>
+						My Tasks 
+						<a href="/create-task">
+							<button class="btn btn-primary pull-right">+ New Task</button>
+						</a>
+					</h3><br />
+
+					<div class="panel panel-default task_viewer">
+						<!-- Table for previewing the classes -->
+						<table class="table table-striped" style="font-size: 1em;" id="task_table">
+							<!-- JS adds the tasks -->
+						</table>
+					</div>
+				</div>
+
+				<!-- Container for classes -->
+				<div class="col-md-4">
+					<h3>
+						My Classes 
+						<a href="new_class.php">
+							<button class="btn btn-success pull-right">+ New Class</button>
+						</a>
+					</h3><br />
+
+					<div class="panel panel-default class_viewer">
+						<!-- Table for previewing the classes -->
+						<table class="table table-striped" style="font-size: 1em;" id="class_table">
+							<!-- JS adds the classes -->
+						</table>
+					</div>
+				</div>
+
+			</div>
+
+			<!-- Quick links row -->
+			<div class="row">
+				<div class="col-md-12">
+					<h5><b>Quick Links:</b></h5>
+					<a href="/create-task">
+						<button class="btn btn-primary">+ New Task</button>
+					</a>
+					<a href="new_class.php">
+						<button class="btn btn-success">+ Create New Class</button>
+					</a>
+					<a href="new_user">
+						<button class="btn btn-warning">+ New User</button>
+					</a>
+				</div>
+			</div>
+
+		</div>
+
+		<!-- Including the page's scripts -->
+		<script type="text/javascript" src="./views/scripts/functions.js"></script>
+		<script type="text/javascript" src="./views/scripts/home_script.js"></script>
+
+	</body>
+</html>
