@@ -4,17 +4,18 @@
 <html>
 	<head>
 		<title>Minder - Create a new task</title>
-		<script type="text/javascript" src="js/save_task.js"></script>
+		<script type="text/javascript" src="./views/scripts/save_task.js"></script>
 	</head>
 	<script type="text/javascript">
 		// Initialising the date picker
 		$(document).ready(function() {
 			$("#date_picker").datepicker({
-				minDate: 0
+				minDate: 0,
+				dateFormat: "yy-mm-dd"
 			});
 		});
 	</script>
-	<body>
+	<body onload="get_tasks('#task_viewer');">
 
 		<%- include('./includes/menu.ejs'); %>
 	
@@ -82,5 +83,6 @@
 			</div>
 
 		</div>
+
 	</body>
 </html>

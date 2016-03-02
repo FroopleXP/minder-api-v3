@@ -1,0 +1,68 @@
+<%- include('./includes/scripts.ejs'); %>
+<html>
+	<head>
+		<title>Minder - Create a new class</title>
+	</head>
+	<body onload="get_classes('#class_table');">
+
+		<%- include('./includes/menu.ejs'); %>
+
+		<!-- main page container -->
+		<div class="container">
+
+			<!-- Page heading -->
+			<h1>
+				<span class="glyphicon glyphicon-edit pull-right" style="margin-right: 20px;"></span>
+				+ Create a new class
+			</h1>
+			<hr />
+
+			<!-- First content row -->
+			<div class="row">
+
+				<!-- Container for creating a new task -->
+				<div class="col-md-8">
+					<h3>
+						Fill out the form to create a new class:
+					</h3><br />
+
+					<!-- Checking if a warning exist -->
+					<% if (typeof warn_msg !== 'undefined') { %>
+						<center><p class="err_msg"><%= warn_msg %></p></center>
+					<% } %> 
+
+					<!-- Form for creating a new class -->
+					<form id="new_class">
+						<div class="form-group">
+							<label>Name:</label>
+							<input type="text" class="form-control" placeholder="Class name" name="class_name">
+						</div>
+						<button type="submit" class="btn btn-success" id="sub">
+							Save new class
+						</button>
+						<span class="save_status" style="margin-left: 10px;"></span>
+					</form>
+
+				</div>
+
+				<!-- Container for current classes -->
+				<div class="col-md-4">
+					<h3>
+						Current Classes 
+					</h3><br />
+
+					<div class="panel panel-default class_viewer">
+						<!-- Table for previewing the classes -->
+						<table class="table table-striped" style="font-size: 1em;" id="class_table">
+
+						</table>
+					</div>
+				</div>
+
+			</div>
+		</div>
+
+		<script type="text/javascript" src="./views/scripts/save_class.js"></script>
+
+	</body>
+</html>

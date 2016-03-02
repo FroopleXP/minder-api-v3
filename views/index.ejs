@@ -4,7 +4,7 @@
 	<head>
 		<title><%= title %></title>
 	</head>
-	<body>
+	<body onload="get_tasks('#task_table'); get_classes('#class_table');">
 
 	<%- include('./includes/menu.ejs'); %>
 
@@ -41,7 +41,7 @@
 				<div class="col-md-4">
 					<h3>
 						My Classes 
-						<a href="new_class.php">
+						<a href="/create-class">
 							<button class="btn btn-success pull-right">+ New Class</button>
 						</a>
 					</h3><br />
@@ -63,20 +63,16 @@
 					<a href="/create-task">
 						<button class="btn btn-primary">+ New Task</button>
 					</a>
-					<a href="new_class.php">
+					<a href="/create-class">
 						<button class="btn btn-success">+ Create New Class</button>
 					</a>
-					<a href="new_user">
+					<a href="/new-user">
 						<button class="btn btn-warning">+ New User</button>
 					</a>
 				</div>
 			</div>
 
 		</div>
-
-		<!-- Including the page's scripts -->
-		<script type="text/javascript" src="./views/scripts/functions.js"></script>
-		<script type="text/javascript" src="./views/scripts/home_script.js"></script>
 
 	</body>
 </html>

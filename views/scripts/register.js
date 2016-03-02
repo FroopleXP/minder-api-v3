@@ -53,37 +53,3 @@ $(document).ready(function() {
 		return false;
 	});
 });
-
-// Function for showing any error messages
-function show_noti(stat, msg) {
-	// Declaring the ID of the notification box
-	var noti_box = $("#show_noti");
-	// Checking the status
-	switch (stat) {
-		case 0:
-			noti_box.removeClass("alert-success");
-			noti_box.addClass("alert-danger");
-			break;
-		case 1:
-			noti_box.removeClass("alert-danger");
-			noti_box.addClass("alert-success");
-			break;
-		default: 
-			noti_box.hide();	
-	}
-	// Setting the text
-	noti_box.html(msg);
-}
-
-// Function for parsing the form data
-function form_parse(form) {
-	// Serializing the data
-	var book_form_data = form.serializeArray(),
-		data_obj = {};
-	// Pushing the data to an array
-	for (var i = 0, l = book_form_data.length; i < l; i++) {
-	    data_obj[book_form_data[i].name] = book_form_data[i].value;
-	}
-	// Returning the object
-	return data_obj;
-}

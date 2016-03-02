@@ -3,7 +3,11 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
+var moment = require('moment');
 var db = require('./mysql_conn.js');
+
+// Moment.js
+moment().format();
 
 // Cleaning tools
 var xssFilters = require('xss-filters'),
@@ -96,7 +100,7 @@ function ensureAuthenticationAPI(req, res, next) {
     if (req.isAuthenticated()) {
         next();
     } else if (!req.isAuthenticated()) {
-        res.send(403);
+        res.sendStatus(403);
     }
 }
 
@@ -273,7 +277,36 @@ app.post('/login', function(req, res, next) {
 
 app.get('/create-task', function(req, res) {
     // Page for creating a new task
-    res.render("create-task.ejs", { title: "New Task"});
+    if (req.isAuthenticated()) { // Checking they're logged in
+        // Checking they have classes to assign to
+        db.query("SELECT classes.id FROM classes WHERE owner_id = ?", req.user.id, function(err, rows, fields) {
+            if (err) throw err;
+            // Checking result
+            if (rows.length > 0) { // There is data
+                res.render("create-task.ejs", { title: "Create a new task" });
+            } else if (rows.length < 1) { // No data
+                res.render("create-class.ejs", { title: "Create a new class", warn_msg: "You must create a class before creating any tasks!" });
+            }
+        });
+    } else if (!req.isAuthenticated()) {
+        res.redirect("/login");
+    }
+});
+
+app.get('/change-password', function(req, res) {
+    if (req.isAuthenticated()) {
+        res.render("change-password.ejs", { title: "Change password" });
+    } else if (!req.isAuthenticated()) {
+        res.redirect("/login");
+    }
+});
+
+app.get('/create-class', function(req, res) {
+    if (req.isAuthenticated()) {
+        res.render("create-class.ejs", { title: "Create a new Class" });
+    } else if (!res.isAuthenticated()) {
+        res.redirect("/login");
+    }
 });
 
 // API
@@ -285,12 +318,129 @@ app.get('/api', ensureAuthenticationAPI, function(req, res) {
 
 app.get('/classes', ensureAuthenticationAPI, function(req, res) {
     // Querying the database for Classes
-    db.query("SELECT classes.id, classes.class_name FROM classes WHERE owner_id = ? ORDER BY date_created DESC", req.user.id, function(err, rows, fields) {
-        if (err) throw err;
-        res.json({
-            class_data: rows
+    if (req.isAuthenticated()) {
+        db.query("SELECT classes.id, classes.class_name FROM classes WHERE owner_id = ? ORDER BY date_created DESC", req.user.id, function(err, rows, fields) {
+            if (err) throw err;
+            res.json({
+                class_data: rows
+            });
         });
-    });
+    } else if (!req.isAuthenticated()) {
+        res.redirect("/login");
+    }
+});
+
+app.post('/save-class', ensureAuthenticationAPI, function(req, res) {
+    // Getting the form data
+    var class_name = xssFilters.inHTMLData(req.body.class_name);
+    // Validating the information
+    if (validator.isNull(class_name)) {
+        // No name given
+        res.json({
+            stat: 0,
+            str: "You must fill out all fields in the form"
+        });
+    } else if (!validator.isLength(class_name, vali_str_opt)) {
+        // Not long enough!
+        res.json({
+            stat: 0,
+            str: "Your organisation name must be longer than " + vali_str_opt.min + " characters"
+        });
+    } else {
+        // All good! Create the class model
+        var class_model = {
+            id: null,
+            owner_id: req.user.id,
+            class_name: class_name,
+            date_created: 'CURRENT_TIMESTAMP'
+        }
+        db.query('INSERT INTO classes SET ?', class_model, function(err, result) {
+            // Checking if was added successfully
+            if (err) throw err;
+            res.json({
+                stat: 1,
+            })
+        });
+    }
+});
+
+app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
+    // Getting the form data
+    var task_name = xssFilters.inHTMLData(req.body.task_name),
+        task_desc = xssFilters.inHTMLData(req.body.task_desc),
+        task_due_date = xssFilters.inHTMLData(req.body.task_due_date),
+        class_id = xssFilters.inHTMLData(req.body.class);
+
+    // Validating the data
+    if (validator.isNull(task_name) || validator.isNull(task_desc) || validator.isNull(task_due_date) || validator.isNull(class_id)) {
+        // Not all filled in
+        res.json({
+            stat: 0,
+            str: "You must fill out all fields!"
+        });
+
+    } else if (!validator.isLength(task_name, vali_str_opt) || !validator.isLength(task_desc, vali_str_opt)) {
+        // Not long enough!
+        res.json({
+            stat: 0,
+            str: "Description and name must be longer than " + vali_str_opt.min + " characters"
+        });
+
+    } else if (!moment(task_due_date).isValid()) {
+        // Date is not valid
+        res.json({
+            stat: 0,
+            str: "Date is invalid"
+        });
+
+    } else {
+
+        // Checking that the class the user is adding to is theirs
+        db.query("SELECT classes.owner_id FROM classes WHERE classes.id = ?", class_id, function(err, rows, fields) {
+            if (err) throw err;
+            if (rows.length < 1) {
+                // That class doesn't exist
+                res.json({
+                    stat: 0,
+                    str: "That class doesn't exist!"
+                });
+
+            } else if (rows.length > 0) {
+                // That class does exist, see if the User owns is
+                if (rows.owner_id === req.user.id) {
+                    // All good, let's create the object to insert into database
+                    var date_set = moment().valueOf(),
+                        date_due = moment(task_due_date).valueOf();
+
+                    var new_task = {
+                        id: null, 
+                        task_name: task_name,
+                        task_desc: task_desc,
+                        date_due: date_due,
+                        date_set: date_set,
+                        set_by_id: req.user.id,
+                        class_id: class_id
+                    }
+
+                    // Inserting into database
+                    db.query("INSERT INTO tasks SET ?", new_task, function(err, result) {
+                        if (err) throw err;
+                        res.json({
+                            stat: 1
+                        });
+                    });
+                } else if (rows.owner_id !== req.user.id) {
+                    // User doesn't own it!
+                    res.json({
+                        stat: 0,
+                        str: "You do not have pemission to access that class..."
+                    });
+                }
+
+            }
+        });
+
+    }
 });
 
 app.get('/tasks', ensureAuthenticationAPI, function(req, res) {
