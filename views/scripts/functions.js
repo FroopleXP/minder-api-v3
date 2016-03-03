@@ -59,10 +59,9 @@ function get_tasks(to_append) {
 		} else if (data.task_data.length > 0) {
 			for (var index = 0; index < data.task_data.length; index++) {
 				// Working out if a task is overdue
-				var curr_stamp = Date.now(),
-					days = day_con(data.task_data[index]['date_due'], curr_stamp),
-					// date_due = date('m/d/y', data.task_data[index]['date_due']);
-					date_due = "Boobs";
+
+				var due_timestamp = data.task_data[index]['date_due'],
+					curr_timestamp = // Add moment stuff here...
 
 				tasks += "<tr><td><a href='edit_task.php?id=" + data.task_data[index]['id'] + "'>";
 				tasks += "<b>" + data.task_data[index]['task_name'] + " - (" + data.task_data[index]['class_name'] + ")</b><span class='glyphicon glyphicon-pencil' style='margin-left: 10px; font-size: 0.9em; color: rgba(0, 0, 0, 0.7);'></span></a>";
@@ -74,27 +73,6 @@ function get_tasks(to_append) {
 		task_container.empty();
 		task_container.html(tasks);
 	});
-}
-
-// Day conversion function
-function day_con(to_comp, curr_stamp) {
-
-	diff_stamp = to_comp - curr_stamp;
-	days = Math.ceil(diff_stamp / 60 / 60 / 24);
-	day_preview = "";
-
-	if (days < 0) {
-		day_preview = "Overdue - by " + Math.abs(days) + " days";
-	} else if (days > 1) {
-		day_preview = days + " days left";
-	} else if (days == 1) {
-		day_preview = "Due tomorrow";
-	} else if (days == 0) {
-		day_preview = "Due today";
-	}
-
-	return day_preview;
-
 }
 
 // Function for showing any error messages
