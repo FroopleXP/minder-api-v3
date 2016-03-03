@@ -28,7 +28,7 @@ $(document).ready(function() {
 
 				$.ajax({
 					method: 'DELETE',
-					url: '/edit-task',
+					url: '/edit-task/' + task_id,
 					data: {
 						task_id: task_id
 					},
@@ -69,9 +69,11 @@ $(document).ready(function() {
 		status.html("<small><i>Saving...</i></small>");
 		save_btn.attr('disabled', true);
 
+		var task_id = save_btn.attr('task-id');
+
 		$.ajax({
-			method: 'POST',
-			url: '/edit-task',
+			method: 'PUT',
+			url: '/edit-task/' + task_id,
 			timeout: 10000,
 			data: form,
 			success: function(data) {

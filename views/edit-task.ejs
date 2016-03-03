@@ -50,7 +50,7 @@
 							<label>Due Date:</label>
 							<input type="text" class="form-control" name="task_due_date" id="date_picker" size="20" value="<%= task.due_date %>">
 						</div>
-						<button type="submit" class="btn btn-primary" id="save_btn">
+						<button type="submit" class="btn btn-primary" id="save_btn" task-id="<%= task.task_id %>">
 							Save changes
 						</button>
 						<span class="update_status" style="margin-left: 10px;"></span>

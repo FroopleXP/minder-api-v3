@@ -486,10 +486,10 @@ app.get('/tasks', ensureAuthenticationAPI, function(req, res) {
     });
 });
 
-app.delete('/edit-task', ensureAuthenticationAPI, function(req, res) {
+app.delete('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
 
     // Checking that user owns this Task
-    db.query("DELETE FROM tasks WHERE set_by_id = ? AND tasks.id = ?", [req.user.id, req.body.task_id],function(err, result) {
+    db.query("DELETE FROM tasks WHERE set_by_id = ? AND tasks.id = ?", [req.user.id, req.params.task_id],function(err, result) {
         if (err) throw err;
         // Checking data
         if (result.affectedRows < 1) {
@@ -508,7 +508,48 @@ app.delete('/edit-task', ensureAuthenticationAPI, function(req, res) {
         }
 
     });
+});
 
+app.put('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
+    // Put request to update a task
+
+    // Getting the data
+    var task_name = xssFilters.inHTMLData(req.body.task_name), 
+        task_desc = xssFilters.inHTMLData(req.body.task_desc),
+        task_due_date = xssFilters.inHTMLData(req.body.task_due_date),
+        task_id = req.params.task_id;;
+
+    // Validating the data
+    if (validator.isNull(task_name) || validator.isNull(task_desc) || validator.isNull(task_due_date)) {
+        // Not all filled in
+        res.json({
+            stat: 0,
+            str: "You must fill out all fields!"
+        });
+
+    } else if (!validator.isLength(task_name, vali_str_opt) || !validator.isLength(task_desc, vali_str_opt)) {
+        // Not long enough!
+        res.json({
+            stat: 0,
+            str: "Description and name must be longer than " + vali_str_opt.min + " characters"
+        });
+
+    } else if (!moment(task_due_date).isValid()) {
+        // Date is not valid
+        res.json({
+            stat: 0,
+            str: "Date is invalid"
+        });
+
+    } else {
+        
+        // Updating the database
+        db.query("UPDATE tasks SET tasks.task_name = ?, tasks.task_desc = ?, tasks.date_due = ? WHERE set_by_id = ? AND tasks.id = ?", 
+            [task_name, task_desc, task_due_date, req.user.id, task_id], function(err, result) {
+                // Check response
+            }); 
+
+    }
 });
 
 app.listen(port, function() {
