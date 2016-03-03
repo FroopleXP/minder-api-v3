@@ -245,7 +245,7 @@ app.post('/register', function(req, res) {
                 });
             }
         });
-    }    
+    }
 });
 
 app.get('/logout', function(req, res) {
@@ -407,13 +407,13 @@ app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
 
             } else if (rows.length > 0) {
                 // That class does exist, see if the User owns is
-                if (rows.owner_id === req.user.id) {
+                if (rows[0]['owner_id'] === req.user.id) {
                     // All good, let's create the object to insert into database
                     var date_set = moment().valueOf(),
                         date_due = moment(task_due_date).valueOf();
 
                     var new_task = {
-                        id: null, 
+                        id: null,
                         task_name: task_name,
                         task_desc: task_desc,
                         date_due: date_due,

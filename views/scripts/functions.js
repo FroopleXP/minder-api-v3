@@ -22,6 +22,26 @@ function get_classes(to_append) {
 	});
 }
 
+function get_class_list(to_append) {
+	var class_container = $(to_append),
+		data_to_app = "";
+	// Getting the classes
+	$.get("/classes", function(data) {
+		// var data = JSON.parse(data);
+		// Checking the data
+		if (data.class_data.length < 1) {
+			data_to_app = "<tr><td style='text-align: center;'>You haven't created any classes yet!</td></tr>";
+		} else if (data.class_data.length > 0) {
+			for (var index = 0; index < data.class_data.length; index++) {
+				data_to_app += "<option value='" + data.class_data[index]['id'] + "'>" + data.class_data[index]['class_name'] + "</option>";
+			}
+		}
+		// Adding the data
+		class_container.empty();
+		class_container.html(data_to_app);
+	});
+}
+
 // Function to get Tasks
 function get_tasks(to_append) {
 	/////////////////////////////////////////////
@@ -74,7 +94,7 @@ function day_con(to_comp, curr_stamp) {
 	}
 
 	return day_preview;
-	
+
 }
 
 // Function for showing any error messages
@@ -91,8 +111,8 @@ function show_noti(stat, msg) {
 			noti_box.removeClass("alert-danger");
 			noti_box.addClass("alert-success");
 			break;
-		default: 
-			noti_box.hide();	
+		default:
+			noti_box.hide();
 	}
 	// Setting the text
 	noti_box.html(msg);

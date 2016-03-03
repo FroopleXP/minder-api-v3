@@ -15,10 +15,10 @@
 			});
 		});
 	</script>
-	<body onload="get_tasks('#task_viewer');">
+	<body onload="get_tasks('#task_viewer'); get_class_list('#class_list');">
 
 		<%- include('./includes/menu.ejs'); %>
-	
+
 		<!-- main page container -->
 		<div class="container">
 
@@ -50,8 +50,8 @@
 						</div>
 						<div class="form-group">
 							<label>Intended Class:</label>
-							<select class="form-control" name="class">
-
+							<select class="form-control" name="class" id="class_list">
+								<!-- Added via JS -->
 							</select>
 						</div>
 						<div class="form-group">
@@ -69,7 +69,7 @@
 				<!-- Container for current classes -->
 				<div class="col-md-4">
 					<h3>
-						Currently set tasks 
+						Currently set tasks
 					</h3><br />
 
 					<div class="panel panel-default class_viewer">
