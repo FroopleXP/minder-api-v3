@@ -4,18 +4,16 @@
 <html>
 	<head>
 		<title>Minder - Create a new task</title>
-		<script type="text/javascript" src="./views/scripts/save_task.js"></script>
+		<script type="text/javascript" src="../views/scripts/edit_task.js"></script>
 	</head>
 	<script type="text/javascript">
-		// Initialising the date picker
 		$(document).ready(function() {
 			$("#date_picker").datepicker({
-				minDate: 0,
-				dateFormat: "mm-dd-yy"
+				minDate: 0
 			});
 		});
 	</script>
-	<body onload="get_tasks('#task_viewer'); get_class_list('#class_list');">
+	<body onload="get_tasks('#task_viewer');">
 
 		<%- include('./includes/menu.ejs'); %>
 
@@ -25,7 +23,7 @@
 			<!-- Page heading -->
 			<h1>
 				<span class="glyphicon glyphicon-edit pull-right" style="margin-right: 20px;"></span>
-				+ Create a new Task
+				Edit a task
 			</h1>
 			<hr />
 
@@ -35,33 +33,27 @@
 				<!-- Container for creating a new task -->
 				<div class="col-md-8">
 					<h3>
-						Fill out the form to create a new task:
+						Editing task "<%= task.task_name %>" <button class="btn btn-danger pull_right" id="task_delete_button" task-id="<%= task.task_id %>">Delete</button>
 					</h3><br />
 
 					<!-- Form for creating a new task -->
-					<form id="new_task">
+					<form id="edit_task">
 						<div class="form-group">
 							<label>Name:</label>
-							<input type="text" class="form-control" placeholder="Task name" name="task_name">
+							<input type="text" class="form-control" placeholder="Task name" name="task_name" value="<%= task.task_name %>">
 						</div>
 						<div class="form-group">
 							<label>Description:</label>
-							<textarea class="form-control task_desc_tb" rows="3" placeholder="Task description..." name="task_desc"></textarea>
-						</div>
-						<div class="form-group">
-							<label>Intended Class:</label>
-							<select class="form-control" name="class" id="class_list">
-								<!-- Added via JS -->
-							</select>
+							<textarea class="form-control task_desc_tb" rows="3" placeholder="Task description..." name="task_desc"><%= task.task_desc %></textarea>
 						</div>
 						<div class="form-group">
 							<label>Due Date:</label>
-							<input type="text" class="form-control" name="task_due_date" id="date_picker" size="20">
+							<input type="text" class="form-control" name="task_due_date" id="date_picker" size="20" value="<%= task.due_date %>">
 						</div>
-						<button type="submit" class="btn btn-primary" id="sub">
-							Save new task
+						<button type="submit" class="btn btn-primary" id="save_btn">
+							Save changes
 						</button>
-						<span class="save_status" style="margin-left: 10px;"></span>
+						<span class="update_status" style="margin-left: 10px;"></span>
 					</form>
 
 				</div>
@@ -69,13 +61,13 @@
 				<!-- Container for current classes -->
 				<div class="col-md-4">
 					<h3>
-						Currently set tasks
+						Other tasks
 					</h3><br />
 
 					<div class="panel panel-default class_viewer">
 						<!-- Table for previewing the classes -->
 						<table class="table table-striped" style="font-size: 1em;" id="task_viewer">
-
+							<!-- Added via JS -->
 						</table>
 					</div>
 				</div>
@@ -83,6 +75,5 @@
 			</div>
 
 		</div>
-
 	</body>
 </html>

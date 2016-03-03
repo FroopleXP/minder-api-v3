@@ -24,7 +24,7 @@ $(document).ready(function() {
 					case 1:
 						status.html('<small><i>Saved!</i></small>').delay(3000).fadeOut();
 						task_form[0].reset();
-						window.location.replace("home.php");
+						window.location.replace("/");
 						break;
 					case 0:
 						alert(data.str);

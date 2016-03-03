@@ -13,7 +13,7 @@ function get_classes(to_append) {
 			data_to_app = "<tr><td style='text-align: center;'>You haven't created any classes yet!</td></tr>";
 		} else if (data.class_data.length > 0) {
 			for (var index = 0; index < data.class_data.length; index++) {
-				data_to_app += "<tr><td><a href='edit_class/" + data.class_data[index]['id'] + "'>" + data.class_data[index]['class_name'] + "<span class='glyphicon glyphicon-pencil' style='margin-left: 10px; font-size: 0.9em; color: rgba(0, 0, 0, 0.7);'></span></a></td></tr>";
+				data_to_app += "<tr><td><a href='/edit-class/" + data.class_data[index]['id'] + "'>" + data.class_data[index]['class_name'] + "<span class='glyphicon glyphicon-pencil' style='margin-left: 10px; font-size: 0.9em; color: rgba(0, 0, 0, 0.7);'></span></a></td></tr>";
 			}
 		}
 		// Adding the data
@@ -51,8 +51,6 @@ function get_tasks(to_append) {
 		tasks = "";
 	// Getting the classes
 	$.get("/tasks", function(data) {
-		console.log(data);
-		// var data = JSON.parse(data);
 		// Checking the data
 		if (data.task_data.length < 1) {
 			tasks = "<tr><td style='text-align: center;'>You haven't set any tasks yet!</td></tr>";
@@ -61,12 +59,13 @@ function get_tasks(to_append) {
 				// Working out if a task is overdue
 
 				var due_timestamp = data.task_data[index]['date_due'],
-					curr_timestamp = // Add moment stuff here...
+					curr_timestamp = moment().valueOf(),
+					date_due = moment.unix(due_timestamp).format("MMMM Do YYYY");
 
-				tasks += "<tr><td><a href='edit_task.php?id=" + data.task_data[index]['id'] + "'>";
+				tasks += "<tr><td><a href='/edit-task/" + data.task_data[index]['id'] + "'>";
 				tasks += "<b>" + data.task_data[index]['task_name'] + " - (" + data.task_data[index]['class_name'] + ")</b><span class='glyphicon glyphicon-pencil' style='margin-left: 10px; font-size: 0.9em; color: rgba(0, 0, 0, 0.7);'></span></a>";
 				tasks += "<p>" + data.task_data[index]['task_desc'] + "</p>";
-				tasks += "<small>Due by: " + date_due + " (" + days + ")</small></td></tr/>";
+				tasks += "<small>Due by: " + date_due + " ()</small></td></tr/>";
 			}
 		}
 		// Adding the data

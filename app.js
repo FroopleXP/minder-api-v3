@@ -309,6 +309,39 @@ app.get('/create-class', function(req, res) {
     }
 });
 
+app.get('/edit-task/:task_id', function(req, res) {
+    if (req.isAuthenticated()) {
+        // Getting the task ID from the URL
+        var task_id = req.params.task_id;
+
+        // Checking that this task belongs to this user
+        db.query("SELECT * FROM tasks WHERE tasks.id = ? AND set_by_id = ?", [task_id, req.user.id], function(err, rows, fields) {
+            if (err) throw err;
+            // Checking there is data
+            if (rows.length < 1) {
+                // No data
+                res.sendStatus(403);
+
+            } else if (rows.length > 0) {
+                // User owns this task, prepare the template
+                var task_info = {
+                    task_name: rows[0]['task_name'],
+                    task_desc: rows[0]['task_desc'],
+                    task_id: rows[0]['id'],
+                    due_date: rows[0]['date_due']
+                }
+
+                res.render("edit-task.ejs", { task: task_info, title: "Editing Task" });
+
+            }
+
+        });
+
+    } else if (!req.isAuthenticated()) {
+        res.redirect("/login");
+    }
+});
+
 // API
 app.get('/api', ensureAuthenticationAPI, function(req, res) {
     res.json({
@@ -451,6 +484,31 @@ app.get('/tasks', ensureAuthenticationAPI, function(req, res) {
             task_data: rows
         });
     });
+});
+
+app.delete('/edit-task', ensureAuthenticationAPI, function(req, res) {
+
+    // Checking that user owns this Task
+    db.query("DELETE FROM tasks WHERE set_by_id = ? AND tasks.id = ?", [req.user.id, req.body.task_id],function(err, result) {
+        if (err) throw err;
+        // Checking data
+        if (result.affectedRows < 1) {
+            // Nothing was deleted
+            res.json({
+                stat: 0,
+                str: "You don't have permission to delete this task."
+            });
+
+        } else if (result.affectedRows > 0) {
+            // Something was deleted
+            res.json({
+                stat: 1
+            });
+
+        }
+
+    });
+
 });
 
 app.listen(port, function() {
