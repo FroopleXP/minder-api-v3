@@ -122,7 +122,7 @@ app.get('/', function(req, res) {
 // Register
 app.get('/register', function(req, res) {
     // Used to register the establishment
-    res.render('register', { title: "Register" });
+    res.render('register_new', { title: "Register" });
 });
 
 app.post('/register', function(req, res) {
@@ -514,7 +514,7 @@ app.put('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
     // Put request to update a task
 
     // Getting the data
-    var task_name = xssFilters.inHTMLData(req.body.task_name), 
+    var task_name = xssFilters.inHTMLData(req.body.task_name),
         task_desc = xssFilters.inHTMLData(req.body.task_desc),
         task_due_date = xssFilters.inHTMLData(req.body.task_due_date),
         task_id = req.params.task_id;;
@@ -542,12 +542,12 @@ app.put('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
         });
 
     } else {
-        
+
         // Updating the database
-        db.query("UPDATE tasks SET tasks.task_name = ?, tasks.task_desc = ?, tasks.date_due = ? WHERE set_by_id = ? AND tasks.id = ?", 
+        db.query("UPDATE tasks SET tasks.task_name = ?, tasks.task_desc = ?, tasks.date_due = ? WHERE set_by_id = ? AND tasks.id = ?",
             [task_name, task_desc, task_due_date, req.user.id, task_id], function(err, result) {
                 // Check response
-            }); 
+            });
 
     }
 });
