@@ -9,36 +9,69 @@
 		<div class="container-fluid">
 
 				<!-- Registration form -->
-				<div class="row" style="margin-top: 20px;">
-					<div class="col-lg-5 col-md-4"></div>
+					<div class="col-lg-4 col-md-4"></div>
+					<div class="col-lg-4 col-md-4">
 
-					<div class="col-lg-5 col-md-4">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								Register your organisation
+						<div id="show_noti" class="alert"></div>
+
+						<form id="register" method="POST">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									Register your organisation
+								</div>
+								<div class="panel-body">
+
+									<div class="form-group">
+										<label for="org_name">Organisation Name:</label>
+										<input type="text" class="form-control" name="org_name" placeholder="Organisation Name" autocomplete="off" required>
+									</div>
+
+									<hr />
+
+									<div class="form-group">
+										<label for="fname">Firstname:</label>
+										<input type="text" class="form-control" name="fname" placeholder="Fistname" autocomplete="off" required>
+									</div>
+
+									<div class="form-group">
+										<label for="lname">Lastname:</label>
+										<input type="text" class="form-control" name="lname" placeholder="Lastname" autocomplete="off" required>
+									</div>
+
+									<div class="form-group">
+										<label for="email">Email:</label>
+										<input type="email" class="form-control" name="email" placeholder="Email" autocomplete="off" required>
+									</div>
+
+									<div class="form-group">
+										<label for="password">Password:</label>
+										<input type="password" class="form-control" name="password" placeholder="Password" autocomplete="off" required>
+									</div>
+
+									<div class="form-group">
+										<label for="password_conf">Confirm Password</label>
+										<input type="password" class="form-control" name="password_conf" placeholder="Confirm Password" autocomplete="off" required>
+									</div>
+
+								</div>
+
+								<div class="panel-footer">
+									<div class="form-group">
+										<p>
+											Already a member? <a href="/login">Login</a>
+											<button class="btn btn-primary pull-right" type="submit" id="reg_btn">Register</button>
+										</p>
+									</div>
+								</div>
 							</div>
-							<div class="panel-body">
+						</form>
 
-								<div class="form-group">
-									<label for="fname">Firstname:</label>
-									<input type="text" class="form-control" name="fname" placeholder="Fistname" autocomplete="off" required>
-								</div>
-
-								<div class="form-group">
-									<label for="fname">Firstname:</label>
-									<input type="text" class="form-control" name="fname" placeholder="Fistname" autocomplete="off" required>
-								</div>
-
-								<div class="form-group">
-									<label for="fname">Firstname:</label>
-									<input type="text" class="form-control" name="fname" placeholder="Fistname" autocomplete="off" required>
-								</div>
-
-							</div>
-						</div>
 					</div>
+					<div class="col-lg-4 col-md-4"></div>
 				</div>
-
 		</div>
+
+		<script type="text/javascript" src="../views/scripts/register.js"></script>
+
 	</body>
 </html>
