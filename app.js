@@ -442,8 +442,8 @@ app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
                 // That class does exist, see if the User owns is
                 if (rows[0]['owner_id'] === req.user.id) {
                     // All good, let's create the object to insert into database
-                    var date_set = moment().valueOf(),
-                        date_due = moment(task_due_date).valueOf();
+                    var date_set = moment().unix(),
+                        date_due = moment(task_due_date).unix();
 
                     var new_task = {
                         id: null,
@@ -517,7 +517,7 @@ app.put('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
     var task_name = xssFilters.inHTMLData(req.body.task_name),
         task_desc = xssFilters.inHTMLData(req.body.task_desc),
         task_due_date = xssFilters.inHTMLData(req.body.task_due_date),
-        task_id = req.params.task_id;;
+        task_id = req.params.task_id;
 
     // Validating the data
     if (validator.isNull(task_name) || validator.isNull(task_desc) || validator.isNull(task_due_date)) {
@@ -543,11 +543,28 @@ app.put('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
 
     } else {
 
+        var task_update_model = {
+            task_name: task_name,
+            task_desc: task_desc,
+            date_due: task_due_date
+        }
+
         // Updating the database
-        db.query("UPDATE tasks SET tasks.task_name = ?, tasks.task_desc = ?, tasks.date_due = ? WHERE set_by_id = ? AND tasks.id = ?",
-            [task_name, task_desc, task_due_date, req.user.id, task_id], function(err, result) {
-                // Check response
-            });
+        db.query("UPDATE tasks SET ? WHERE set_by_id = ? AND tasks.id = ?", [task_update_model, req.user.id, task_id], function(err, result) {
+            // Check response
+            if (err) throw err;
+            if (result.affectedRows < 1) {
+                // Nothing updated
+                res.json({
+                    stat: 0,
+                    str: "You don not have persmission to edit this task"
+                });
+            } else if (result.affectedRows > 0) {
+                res.json({
+                    stat: 1
+                });
+            }
+        });
 
     }
 });

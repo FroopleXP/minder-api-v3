@@ -6,6 +6,8 @@ $(document).ready(function() {
 	var status = $(".update_status");
 	var save_btn = $("#sub");
 
+	var task_id = $("#task_id").attr('task-id');
+
 	// Adding the date picker plugin
 	var date_sel = $("#date_picker");
 	date_sel.datepicker({
@@ -22,16 +24,9 @@ $(document).ready(function() {
 
 				that.html("<tr><td><center><img src='../views/images/loader.gif' height='20px' width='20px'></center></td></tr>");
 
-				var task_id = that.attr('task-id');
-
-				console.log(task_id);
-
 				$.ajax({
 					method: 'DELETE',
 					url: '/edit-task/' + task_id,
-					data: {
-						task_id: task_id
-					},
 					success: function(data) {
 						if (data.stat == 1) {
 							window.location.replace("/");
@@ -66,10 +61,10 @@ $(document).ready(function() {
 	task_form.on('submit', function() {
 
 		var form = task_form.serialize();
+
 		status.html("<small><i>Saving...</i></small>");
 		save_btn.attr('disabled', true);
 
-		var task_id = save_btn.attr('task-id');
 
 		$.ajax({
 			method: 'PUT',

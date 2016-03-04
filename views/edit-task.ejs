@@ -20,6 +20,9 @@
 		<!-- main page container -->
 		<div class="container">
 
+			<!-- Used for storing the task ID -->
+			<input type="hidden" task-id="<%= task.task_id %>" id="task_id">
+
 			<!-- Page heading -->
 			<h1>
 				<span class="glyphicon glyphicon-edit pull-right" style="margin-right: 20px;"></span>
@@ -33,7 +36,7 @@
 				<!-- Container for creating a new task -->
 				<div class="col-md-8">
 					<h3>
-						Editing task "<%= task.task_name %>" <button class="btn btn-danger pull_right" id="task_delete_button" task-id="<%= task.task_id %>">Delete</button>
+						Editing task "<%= task.task_name %>" <button class="btn btn-danger pull_right" id="task_delete_button">Delete</button>
 					</h3><br />
 
 					<!-- Form for creating a new task -->
@@ -50,7 +53,7 @@
 							<label>Due Date:</label>
 							<input type="text" class="form-control" name="task_due_date" id="date_picker" size="20" value="<%= task.due_date %>">
 						</div>
-						<button type="submit" class="btn btn-primary" id="save_btn" task-id="<%= task.task_id %>">
+						<button type="submit" class="btn btn-primary" id="save_btn">
 							Save changes
 						</button>
 						<span class="update_status" style="margin-left: 10px;"></span>
