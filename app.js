@@ -342,6 +342,37 @@ app.get('/edit-task/:task_id', function(req, res) {
     }
 });
 
+app.get('/edit-class/:class_id', function(req, res) {
+
+    // Checking they're logged in
+    if (req.isAuthenticated()) {    
+        // They are, let's get the information about this class
+        var class_id = req.params.class_id;
+        db.query("SELECT * FROM classes WHERE classes.owner_id = ? AND classes.id = ?", [req.user.id, class_id], function(err, rows, fields) {
+            // Checking for errors
+            if (err) throw err;
+
+            // Checking the data response
+            if (rows.length < 1) {
+                // No data
+                res.redirect("/");
+ 
+            } else if (rows.length > 0) {
+                // There's data
+                res.render("edit-class", { title: "Edit class", class_info: rows });
+
+            }
+
+        });
+
+    } else if (!req.isAuthenticated()) {
+        // They're not, let's redirect them
+        res.redirect("/login");
+
+    }
+
+});
+
 // API
 app.get('/api', ensureAuthenticationAPI, function(req, res) {
     res.json({
