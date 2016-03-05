@@ -358,19 +358,21 @@ app.get('/edit-class/:class_id', function(req, res) {
                 res.redirect("/");
  
             } else if (rows.length > 0) {
+                
                 // There's data
-                res.render("edit-class", { title: "Edit class", class_info: rows });
+                var class_object = {
+                    class_name: rows[0]['class_name'],
+                    class_id: rows[0]['id']
+                }
 
+                res.render("edit-class", { title: "Edit class", class_info: class_object });
             }
-
         });
 
     } else if (!req.isAuthenticated()) {
         // They're not, let's redirect them
         res.redirect("/login");
-
     }
-
 });
 
 // API
@@ -505,6 +507,22 @@ app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
         });
 
     }
+});
+
+app.get('/enroled/:class_id', ensureAuthenticationAPI, function(req, res) {
+
+    // Getting the enroled students
+    var class_id = req.params.class_id;
+
+    // Querying the Database
+    db.query("SELECT std_users.stu_full_name, std_users.stu_id FROM std_users, relations, classes WHERE relations.student_id = std_users.stu_id and relations.class_id = classes.id and classes.id = ? and classes.owner_id = ?", [class_id, req.user.id], function(err, rows, fields) {
+        // Checking response
+        if (err) throw err;
+        res.json({
+            enroled_data: rows
+        });
+
+    });
 });
 
 app.get('/tasks', ensureAuthenticationAPI, function(req, res) {

@@ -1,0 +1,109 @@
+<%- include('./includes/scripts.ejs'); %>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Minder - Create a new task</title>
+		<script type="text/javascript" src="../views/scripts/edit_class.js"></script>
+		<script type="text/javascript" src="../views/scripts/student_search.js"></script>
+	</head>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#date_picker").datepicker({
+				minDate: 0
+			});
+		});
+	</script>
+	<body onload="get_classes('#class_viewer'); get_enroled(<%= class_info.class_id %>, '#enroled_students');">
+
+		<%- include('./includes/menu.ejs'); %>
+
+		<input type="hidden" class-id="<%= class_info.class_id %>" id="class_id">
+
+		<!-- main page container -->
+		<div class="container">
+
+			<!-- Page heading -->
+			<h1>
+				<span class="glyphicon glyphicon-edit pull-right" style="margin-right: 20px;"></span>
+				Edit a class
+			</h1>
+			<hr />
+
+			<!-- First content row -->
+			<div class="row">
+
+				<!-- Container for editing a class -->
+				<div class="col-md-8">
+					<h3>
+						Editing class "<%= class_info.class_name %>" <button class="btn btn-danger pull_right" id="class_delete_button">Delete</button>
+					</h3><br />
+
+					<!-- Form for creating a new task -->
+					<form id="edit_class">
+						<div class="form-group">
+							<label>Name:</label>
+							<input type="text" class="form-control" placeholder="Task name" name="class_name" value="<%= class_info.class_name %>">
+						</div>
+						<button type="submit" class="btn btn-primary" id="save_btn">
+							Save changes
+						</button>
+						<span class="update_status" style="margin-left: 10px;"></span>
+					</form>
+
+					<hr />
+
+					<!-- Search form container -->
+					<div class="col-md-4" style="padding: 0px;">
+						<form id="student_search">
+							<div class="input-group">
+    							<input type="text" class="form-control" id="search_box" name="query" autocomplete="off" placeholder="Search for students...">
+								<span class="input-group-btn">
+									<button class="btn btn-primary" type="submit">Search</button>
+								</span>
+							</div>	
+						</form>
+
+						<hr />
+
+						<h5><b>Currently Enroled <span class="badge" id="curr_count"></span></b></h4>
+
+						<!-- currently enroled students -->
+						<div class="panel panel-default class_viewer" id="">
+							<table class="table table-stripped" style="font-size: 1em;" id="enroled_students">
+								<!-- Added via JavaScript -->
+							</table>
+						</div>
+
+					</div>
+
+					<!-- Search results container -->
+					<div class="col-md-8">
+						<div class="panel panel-default class_viewer">
+							<table class="table table-striped" style="font-size: 1em;" id="search_results">
+								<!-- Results added via javascript -->
+							</table>
+						</div>
+					</div>
+
+				</div>
+
+				<!-- Container for current classes -->
+				<div class="col-md-4">
+					<h3>
+						Other Classes
+					</h3><br />
+
+					<div class="panel panel-default class_viewer">
+						<!-- Table for previewing the classes -->
+						<table class="table table-striped" style="font-size: 1em;" id="class_viewer">
+							
+						</table>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</body>
+</html>

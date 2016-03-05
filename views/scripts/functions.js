@@ -22,6 +22,14 @@ function get_classes(to_append) {
 	});
 }
 
+// Used to get enrolled students from a class
+function get_enroled(class_id, to_append) {
+	var enroled_box = $(to_append);
+	$.get("/enroled/" + class_id, function(data) {
+		console.log(data);
+	});
+}
+
 function get_class_list(to_append) {
 	var class_container = $(to_append),
 		data_to_app = "";
