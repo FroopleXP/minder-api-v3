@@ -418,7 +418,35 @@ app.get('/classes', ensureAuthenticationAPI, function(req, res) {
     } else if (!req.isAuthenticated()) {
         res.redirect("/login");
     }});
+app.put('/classes', ensureAuthenticationAPI, function(req, res) {
 
+    // Getting data from the request
+    var class_id = req.body.class_id,
+        class_name = req.body.class_name;
+
+    // Updating the class
+    db.query("UPDATE classes SET classes.class_name = ? WHERE owner_id = ? AND classes.id = ?", [class_name, req.user.id, class_id], function(err, result) {
+        // Checking for those pesky errors!
+        if (err) throw err;
+        // Checking data
+        if (result.affectedRows > 0) {
+            // Success!
+            res.json({
+                stat: 1
+            });
+
+        } else if (result.affectedRows < 1) {
+            // Failure
+            res.json({
+                stat: 0,
+                str: "You do not have permission to edit this class"
+            });
+
+        }
+
+    });
+
+});
 
 //////////////////////////////////////////////////////////////////////
 // ROUTES FOR SAVING TASKS
@@ -666,7 +694,6 @@ app.get('/tasks', ensureAuthenticationAPI, function(req, res) {
             task_data: rows
         });
     });});
-
 app.delete('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
 
     // Checking that user owns this Task
@@ -689,7 +716,6 @@ app.delete('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
         }
 
     });});
-
 app.put('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
     // Put request to update a task
 

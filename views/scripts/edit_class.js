@@ -5,6 +5,8 @@ $(document).ready(function() {
 	var delete_btn = $("#class_delete_button");
 	var status = $(".update_status");
 
+	var class_id = $("#class_id").attr("class-id");
+
 	// Listening for click on delete button
 	delete_btn.on('click', function() {
 		var that = $(this);
@@ -47,14 +49,19 @@ $(document).ready(function() {
 
 	class_form.on('submit', function() {
 
-		var form = class_form.serialize();
+		var form = class_form.serializeArray(),
+			class_name = form[0]['value'];
+
 		status.html("<small><i>Saving...</i></small>");
 
 		$.ajax({
-			method: 'POST',
-			url: './php/class_save_script.php',
+			method: 'PUT',
+			url: '/classes',
 			timeout: 10000,
-			data: form,
+			data: {
+				class_name: class_name,
+				class_id: class_id
+			},
 			success: function(data) {
 
 				// Checking response
@@ -64,7 +71,7 @@ $(document).ready(function() {
 						window.location.replace("home.php");
 						break;
 					case 0:
-						alert(data.stat);
+						alert(data.str);
 						break;
 				}
 
