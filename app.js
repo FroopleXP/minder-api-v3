@@ -287,12 +287,12 @@ app.get('/create-task', function(req, res) {
         res.redirect("/login");
     }});
 
-app.get('/change-password', function(req, res) {
-    if (req.isAuthenticated()) {
-        res.render("change-password.ejs", { title: "Change password" });
-    } else if (!req.isAuthenticated()) {
-        res.redirect("/login");
-    }});
+// app.get('/change-password', function(req, res) {
+//     if (req.isAuthenticated()) {
+//         res.render("change-password.ejs", { title: "Change password" });
+//     } else if (!req.isAuthenticated()) {
+//         res.redirect("/login");
+//     }});
 
 app.get('/create-class', function(req, res) {
     if (req.isAuthenticated()) {
