@@ -19,8 +19,11 @@ $(document).ready(function() {
 				that.html("<tr><td><center><img src='../views/images/loader.gif' height='20px' width='20px'></center></td></tr>");
 
 				$.ajax({
-					method: 'POST',
-					url: 'php/remove_class.php',
+					method: 'DELETE',
+					url: '/classes',
+					data: {
+						class_id: class_id
+					}
 					success: function(data) {
 						var data = JSON.parse(data);
 						if (data['stat'] == 1) {

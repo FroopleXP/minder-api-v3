@@ -444,9 +444,73 @@ app.put('/classes', ensureAuthenticationAPI, function(req, res) {
 
         }
 
-    });
+    });});
+app.delete('/classes', ensureAuthenticationAPI, function(req, res) {
 
-});
+    // Getting the data from API call
+    var class_id = req.body.class_id;
+
+    // Deleting it from the DB
+    db.query("DELETE FROM classes WHERE classes.id = ? AND classes.owner_id = ?", [class_id, req.body], function(err, result) {
+
+        // Checking for errors
+        if (err) throw err;
+
+        // Checking data
+        if (result.affectedRows > 0) {
+            // Success! Delete set tasks
+            db.query("DELETE FROM tasks WHERE tasks.class_id = ?", class_id, function(err, result) {
+
+                // Checking for error
+                if (err) throw err;
+
+                // Checking data
+                if (result.affectedRows > 0) {
+                    // Success, remove users from class
+                    db.query("DELETE FROM relations WHERE relations.class_id = ?", class_id, function(err, result) {
+
+                        // You should know how it goes by now... Checking for errors
+                        if (err) throw err;
+
+                        // Checking data
+                        if (result.affectedRows > 0) {
+                            // Success!
+                            res.json({
+                                stat: 1
+                            });
+
+                        } else if (result.affectedRows < 1) {
+                            // Failure!
+                            res.json({
+                                stat: 0,
+                                str: "Failed to remove users from this class!"
+                            });
+
+                        }
+
+                    });
+
+                } else if (result.affectedRows < 1) {
+                    // Error
+                    res.json({
+                        stat: 0,
+                        str: "Failed to unset tasks!"
+                    });
+                }
+
+            });
+
+
+        } else if (result.affectedRows < 1) {
+            // Failure
+            res.json({
+                stat: 0,
+                str: "You do not have permission to delete this Class!"
+            });
+
+        }
+
+    });});
 
 //////////////////////////////////////////////////////////////////////
 // ROUTES FOR SAVING TASKS
