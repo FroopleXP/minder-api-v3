@@ -6,6 +6,8 @@ $(document).ready(function() {
 	var currently_enroled = $("#enroled_students");
 	var curr_count = $("#curr_count");
 
+	var class_id = $("#class_id").attr("class-id");
+
 	// Setting default value to the search box
 	search_results.html("<tr><td><center>Search via a students' Lastname</center></td></tr>");
 
@@ -13,39 +15,39 @@ $(document).ready(function() {
 	search_form.on('submit', function() {
 
 		// Serializing the form data
-		var data = search_form.serialize(),
-			class_id = $("#class_id").attr("class-id");
+		var data = search_form.serializeArray(),
+			search_query = data[0].value;
 
 		search_results.html("<tr><td><center><img src='../views/images/loader.gif' height='30px' width='30px'></center></td></tr>");
 
 		// Sending AJAX request
 		$.ajax({
-			url: 'php/search_script.php',
+			url: '/student-search',
 			method: 'GET',
 			data: {
-				search_query: data,
+				search_query: search_query,
 				class_id: class_id
 			},
 			timeout: 10000,
 			success: function(data) {
-				var res = JSON.parse(data);
-				if (res['stat'] == 1) {
-					
-					// To append to the table
-					var users = "";
 
-					// Looping through the data
-					$.each(res['data'], function(i, itm) {
-						users += "<tr><td>" + itm['user_name'] + "<button class='btn btn-success pull-right' title='Enrol " + itm['user_name'] + " to this class' data='" + itm['user_id'] + "' user_name='" + itm['user_name'] + "'>Enrol</button></td></tr>";
-					});
+				// Checking the data response
+				if (data.data.length < 1) {
+					// There's no data
+					search_results.html("<tr><td>There were not results for '" + search_query + "'</td></tr>");
 
-					// Appending results to the table
-					search_results.html(users);
+				} else if (data.data.length > 0) {
+					// There's data
+					var user_data = "";
+					for (var index = 0; index < data.data.length; index++) {
+						user_data += "<tr><td>" + data.data[index].stu_full_name + "<button class='btn btn-success pull-right' title='Enrol " + data.data[index].stu_full_name + " to this class' data='" + data.data[index].stu_id + "' user_name='" + data.data[index].stu_full_name + "'>Enrol</button></td></tr>";
+					}
+					// Adding data to search results
+					search_results.html(user_data);
 
-				} else {
-					search_results.html("<tr><td><center>" + res['str'] + "</center></td></tr>");
 				}
-			}, 
+
+			},
 			error: function(data) {
 				console.log(data);
 				alert("There was an error getting search results (see log)");
@@ -112,38 +114,37 @@ $(document).ready(function() {
 
 		// Sending AJAX request
 		$.ajax({
-			method: 'POST',
-			url: 'php/add_user_to_class_script.php',
-			data: {
-				user_id: user_id,
-				user_name: user_name
-			},
+			method: 'PUT',
+			url: '/enroled/' + class_id + '/' + user_id,
 			timeout: 5000,
 			success: function(data) {
-				var data = JSON.parse(data);
-				if (data['stat'] == 1) {
 
-					var currently_enroled = $("#enroled_students");
+				// if (data.stat == 1) {
+				//
+				// 	var currently_enroled = $("#enroled_students");
+				//
+				// 	// Removing the User from the list
+				// 	that.parent().fadeOut("2000", function() {
+				// 		var curr_count_var = parseInt(curr_count.text());
+				// 		var new_count = curr_count_var + 1;
+				//
+				// 		// Checking if this is the first record
+				// 		if (curr_count_var < 1) {
+				// 			currently_enroled.empty();
+				// 		}
+				//
+				// 		curr_count.text(new_count);
+				//
+				// 		// Adding the user to currently enroled
+				// 		currently_enroled.prepend("<tr><td>" + data['data']['user_name'] + "<button class='btn btn-danger pull-right' data='" + data['data']['user_id'] + "' title='Remove " + data['data']['user_name'] + " from this class'>Remove</button></td></tr>");
+				// 	});
+				//
+				// } else if (data['stat'] == 0) {
+				// 	alert(data['str']);
+				// }
 
-					// Removing the User from the list
-					that.parent().fadeOut("2000", function() {
-						var curr_count_var = parseInt(curr_count.text());
-						var new_count = curr_count_var + 1;
+				console.log(data);
 
-						// Checking if this is the first record
-						if (curr_count_var < 1) {	
-							currently_enroled.empty();
-						}
-
-						curr_count.text(new_count);
-
-						// Adding the user to currently enroled
-						currently_enroled.prepend("<tr><td>" + data['data']['user_name'] + "<button class='btn btn-danger pull-right' data='" + data['data']['user_id'] + "' title='Remove " + data['data']['user_name'] + " from this class'>Remove</button></td></tr>");
-					});
-
-				} else if (data['stat'] == 0) {
-					alert(data['str']);
-				}
 			},
 			error: function(data) {
 				alert("There was an error enroling the user, please try again. (Check Log)");

@@ -127,7 +127,7 @@ app.get('/register', function(req, res) {
 
 app.post('/register', function(req, res) {
 
-    // Getting the form data and cleaning it of XSS scripts
+    // Getting the form data and cleaning it of XSS scripts,
     var org_name = xssFilters.inHTMLData(req.body.form_data.org_name),
         firstname = xssFilters.inHTMLData(req.body.form_data.fname),
         lastname = xssFilters.inHTMLData(req.body.form_data.lname),
@@ -345,7 +345,7 @@ app.get('/edit-task/:task_id', function(req, res) {
 app.get('/edit-class/:class_id', function(req, res) {
 
     // Checking they're logged in
-    if (req.isAuthenticated()) {    
+    if (req.isAuthenticated()) {
         // They are, let's get the information about this class
         var class_id = req.params.class_id;
         db.query("SELECT * FROM classes WHERE classes.owner_id = ? AND classes.id = ?", [req.user.id, class_id], function(err, rows, fields) {
@@ -356,9 +356,9 @@ app.get('/edit-class/:class_id', function(req, res) {
             if (rows.length < 1) {
                 // No data
                 res.redirect("/");
- 
+
             } else if (rows.length > 0) {
-                
+
                 // There's data
                 var class_object = {
                     class_name: rows[0]['class_name'],
@@ -523,6 +523,116 @@ app.get('/enroled/:class_id', ensureAuthenticationAPI, function(req, res) {
         });
 
     });
+});
+
+app.put('/enroled/:class_id/:student_id', ensureAuthenticationAPI, function(req, res) {
+
+    // Getting the data from the API call
+    var class_id = req.params.class_id,
+        student_id = req.params.student_id;
+
+    console.log(class_id + " " + student_id);
+
+    // Making sure that User exists
+    db.query("SELECT stu_fname FROM std_users WHERE stu_id = ?", student_id, function(err, rows, fields) {
+        // Checking response
+        if (err) throw err;
+        // Checking data
+        if (rows.length > 0) {
+            // User does exist, check that the class exist
+            db.query("SELECT class_name FROM classes WHERE id = ? AND owner_id = ?", [class_id, req.user.id], function(err, rows, fields) {
+                // Checking response
+                if (err) throw err;
+                // Checking the data
+                if (rows.length > 0) {
+                    // The class does exist and the person does own it, add the user to the class
+                    var enrol_model = {
+                        id: null,
+                        class_id: class_id,
+                        student_id: student_id,
+                        joined_class: 'CURRENT_TIMESTAMP'
+                    }
+                    // Inserting to the Database
+                    db.query("INSERT INTO relations SET ?", enrol_model, function(err, result) {
+                        // Checking the update
+                        if (err) throw err;
+                        // Checking the data
+                        if (rows.affectedRows > 0) {
+                            // Success! Getting info to send to client
+                            db.query("SELECT stu_id, stu_full_name FROM std_users WHERE stu_id = ?", student_id, function(err, rows, fields) {
+                                // Checking error
+                                if (err) throw err;
+                                // Checking the data
+                                // if (rows.length > 0) {
+                                //     // There's data
+                                //     res.json({
+                                //         stat: 1,
+                                //         user_name: rows[0].stu_full_name,
+                                //         user_id: rows[0].stu_id
+                                //     });
+                                //
+                                // } else if (rows.length < 1) {
+                                //     // There's no data
+                                //     res.json({
+                                //         stat: 0,
+                                //         str: "Failed to add user to class"
+                                //     });
+                                //
+                                // }
+
+                                console.log(rows);
+
+                            });
+
+                        } else if (rows.affectedRows < 1) {
+                            // Failure
+                            res.json({
+                                stat: 0,
+                                str: "Failed to add user to class!"
+                            });
+                        }
+
+                    });
+
+                } else if (rows.length < 1) {
+                    // The class either doesn't exist or the person doesn't own it
+                    res.json({
+                        stat: 0,
+                        str: "You do not have permission to edit this class"
+                    });
+
+                }
+
+            });
+
+        } else if (rows.length < 1) {
+            // User does not exist
+            res.json({
+                stat: 0,
+                str: "That user doesn't exist!"
+            });
+
+        }
+
+    });
+
+
+});
+
+app.get('/student-search', ensureAuthenticationAPI, function(req, res) {
+
+    // Getting data from the request
+    var class_id = req.query.class_id,
+        search_query = req.query.search_query;
+
+    // Searching for the Student
+    db.query("SELECT std_users.stu_full_name, std_users.stu_id FROM std_users where std_users.stu_id NOT IN (select relations.student_id from relations where relations.class_id = ?) AND std_users.stu_lname LIKE ?", [class_id, search_query], function(err, rows, fields) {
+        if (err) throw err;
+        res.json({
+            data: rows
+        });
+    });
+
 });
 
 app.get('/tasks', ensureAuthenticationAPI, function(req, res) {
