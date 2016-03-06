@@ -23,13 +23,13 @@ $(document).ready(function() {
 					url: '/classes',
 					data: {
 						class_id: class_id
-					}
+					},
 					success: function(data) {
-						var data = JSON.parse(data);
-						if (data['stat'] == 1) {
+
+						if (data.stat == 1) {
 							window.location.replace("home.php");
-						} else if (data['stat'] == 0) {
-							alert(data['str']);
+						} else if (data.stat == 0) {
+							alert(data.str);
 						}
 					},
 					error: function(data) {
