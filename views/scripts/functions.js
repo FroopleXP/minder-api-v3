@@ -23,17 +23,20 @@ function get_classes(to_append) {
 }
 
 // Used to get enrolled students from a class
-function get_enroled(class_id, to_append) {
-	var enroled_box = $(to_append);
+function get_enroled(class_id, to_append, counter) {
+	var enroled_box = $(to_append),
+		count_box = $(counter);
 	$.get("/enroled/" + class_id, function(data) {
 		// Checking data
 		if (data.enroled_data.length < 1) {
 			// There's no data!
 			enroled_box.html("<tr><td>No students enroled</td></tr>");
+			count_box.html(data.enroled_data.length.toString());
 
 		} else if (data.enroled_data.length > 0) {
 			// There's data!
 			var enroled_data = "";
+			count_box.html(data.enroled_data.length.toString());
 			for (var index = 0; index < data.enroled_data.length; index++) {
 				enroled_data += "<tr><td>" + data.enroled_data[index].stu_full_name + "<button class='btn btn-danger pull-right' data='" + data.enroled_data[index].stu_id + "' title='Remove " + data.enroled_data[index].stu_full_name + " from this class'>Remove</button></td></tr>";
 			}

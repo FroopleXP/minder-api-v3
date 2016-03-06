@@ -116,14 +116,12 @@ app.get('/', function(req, res) {
     } else if (!req.isAuthenticated()) {
         // They're not!
         res.redirect("login");
-    }
-});
+    }});
 
 // Register
 app.get('/register', function(req, res) {
     // Used to register the establishment
-    res.render('register_new', { title: "Register" });
-});
+    res.render('register_new', { title: "Register" });});
 
 app.post('/register', function(req, res) {
 
@@ -245,13 +243,11 @@ app.post('/register', function(req, res) {
                 });
             }
         });
-    }
-});
+    }});
 
 app.get('/logout', function(req, res) {
     req.logout();
-    res.redirect('/');
-});
+    res.redirect('/');});
 
 // Login
 app.get('/login', function(req, res) {
@@ -272,8 +268,7 @@ app.post('/login', function(req, res, next) {
                 return res.redirect("/");
             });
         }
-    })(req, res, next);
-});
+    })(req, res, next);});
 
 app.get('/create-task', function(req, res) {
     // Page for creating a new task
@@ -290,24 +285,21 @@ app.get('/create-task', function(req, res) {
         });
     } else if (!req.isAuthenticated()) {
         res.redirect("/login");
-    }
-});
+    }});
 
 app.get('/change-password', function(req, res) {
     if (req.isAuthenticated()) {
         res.render("change-password.ejs", { title: "Change password" });
     } else if (!req.isAuthenticated()) {
         res.redirect("/login");
-    }
-});
+    }});
 
 app.get('/create-class', function(req, res) {
     if (req.isAuthenticated()) {
         res.render("create-class.ejs", { title: "Create a new Class" });
     } else if (!res.isAuthenticated()) {
         res.redirect("/login");
-    }
-});
+    }});
 
 app.get('/edit-task/:task_id', function(req, res) {
     if (req.isAuthenticated()) {
@@ -339,8 +331,7 @@ app.get('/edit-task/:task_id', function(req, res) {
 
     } else if (!req.isAuthenticated()) {
         res.redirect("/login");
-    }
-});
+    }});
 
 app.get('/edit-class/:class_id', function(req, res) {
 
@@ -372,30 +363,17 @@ app.get('/edit-class/:class_id', function(req, res) {
     } else if (!req.isAuthenticated()) {
         // They're not, let's redirect them
         res.redirect("/login");
-    }
-});
+    }});
 
 // API
 app.get('/api', ensureAuthenticationAPI, function(req, res) {
     res.json({
         data: 'Cool cats...'
-    });
-});
+    });});
 
-app.get('/classes', ensureAuthenticationAPI, function(req, res) {
-    // Querying the database for Classes
-    if (req.isAuthenticated()) {
-        db.query("SELECT classes.id, classes.class_name FROM classes WHERE owner_id = ? ORDER BY date_created DESC", req.user.id, function(err, rows, fields) {
-            if (err) throw err;
-            res.json({
-                class_data: rows
-            });
-        });
-    } else if (!req.isAuthenticated()) {
-        res.redirect("/login");
-    }
-});
-
+//////////////////////////////////////////////////////////////////////
+// ROUTES FOR EDITING CLASSES
+//////////////////////////////////////////////////////////////////////
 app.post('/save-class', ensureAuthenticationAPI, function(req, res) {
     // Getting the form data
     var class_name = xssFilters.inHTMLData(req.body.class_name);
@@ -427,9 +405,24 @@ app.post('/save-class', ensureAuthenticationAPI, function(req, res) {
                 stat: 1,
             })
         });
-    }
-});
+    }});
+app.get('/classes', ensureAuthenticationAPI, function(req, res) {
+    // Querying the database for Classes
+    if (req.isAuthenticated()) {
+        db.query("SELECT classes.id, classes.class_name FROM classes WHERE owner_id = ? ORDER BY date_created DESC", req.user.id, function(err, rows, fields) {
+            if (err) throw err;
+            res.json({
+                class_data: rows
+            });
+        });
+    } else if (!req.isAuthenticated()) {
+        res.redirect("/login");
+    }});
 
+
+//////////////////////////////////////////////////////////////////////
+// ROUTES FOR SAVING TASKS
+//////////////////////////////////////////////////////////////////////
 app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
     // Getting the form data
     var task_name = xssFilters.inHTMLData(req.body.task_name),
@@ -506,9 +499,11 @@ app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
             }
         });
 
-    }
-});
+    }});
 
+//////////////////////////////////////////////////////////////////////
+// ROUTES FOR EDITING ENROLMENTS/CLASSES
+//////////////////////////////////////////////////////////////////////
 app.get('/enroled/:class_id', ensureAuthenticationAPI, function(req, res) {
 
     // Getting the enroled students
@@ -522,23 +517,26 @@ app.get('/enroled/:class_id', ensureAuthenticationAPI, function(req, res) {
             enroled_data: rows
         });
 
-    });
-});
-
+    });});
 app.put('/enroled/:class_id/:student_id', ensureAuthenticationAPI, function(req, res) {
 
     // Getting the data from the API call
     var class_id = req.params.class_id,
-        student_id = req.params.student_id;
+        student_id = req.params.student_id,
+        student_name = "";
 
     console.log(class_id + " " + student_id);
 
     // Making sure that User exists
-    db.query("SELECT stu_fname FROM std_users WHERE stu_id = ?", student_id, function(err, rows, fields) {
+    db.query("SELECT stu_full_name FROM std_users WHERE stu_id = ?", student_id, function(err, rows, fields) {
         // Checking response
         if (err) throw err;
         // Checking data
         if (rows.length > 0) {
+
+            // Setting the Student name for the client
+            student_name = rows[0]['stu_full_name'];
+
             // User does exist, check that the class exist
             db.query("SELECT class_name FROM classes WHERE id = ? AND owner_id = ?", [class_id, req.user.id], function(err, rows, fields) {
                 // Checking response
@@ -557,34 +555,15 @@ app.put('/enroled/:class_id/:student_id', ensureAuthenticationAPI, function(req,
                         // Checking the update
                         if (err) throw err;
                         // Checking the data
-                        if (rows.affectedRows > 0) {
+                        if (result.affectedRows > 0) {
                             // Success! Getting info to send to client
-                            db.query("SELECT stu_id, stu_full_name FROM std_users WHERE stu_id = ?", student_id, function(err, rows, fields) {
-                                // Checking error
-                                if (err) throw err;
-                                // Checking the data
-                                // if (rows.length > 0) {
-                                //     // There's data
-                                //     res.json({
-                                //         stat: 1,
-                                //         user_name: rows[0].stu_full_name,
-                                //         user_id: rows[0].stu_id
-                                //     });
-                                //
-                                // } else if (rows.length < 1) {
-                                //     // There's no data
-                                //     res.json({
-                                //         stat: 0,
-                                //         str: "Failed to add user to class"
-                                //     });
-                                //
-                                // }
-
-                                console.log(rows);
-
+                            res.json({
+                                stat: 1,
+                                user_id: student_id,
+                                user_name: student_name
                             });
 
-                        } else if (rows.affectedRows < 1) {
+                        } else if (result.affectedRows < 1) {
                             // Failure
                             res.json({
                                 stat: 0,
@@ -614,11 +593,54 @@ app.put('/enroled/:class_id/:student_id', ensureAuthenticationAPI, function(req,
 
         }
 
-    });
+    });});
+app.delete('/enroled/:class_id/:student_id', ensureAuthenticationAPI, function(req, res) {
 
+    // Getting data from the URL
+    var class_id = req.params.class_id,
+        student_id = req.params.student_id;
 
-});
+    // Checking that the logged in user actually owns this class
+    db.query("SELECT class_name FROM classes WHERE id = ? AND owner_id = ?", [class_id, req.user.id], function(err, rows, fields) {
+        // Checking for errors
+        if (err) throw err;
+        // Checking for data
+        if (rows.length > 0) {
+            // This user owns it, remove it
+            db.query("DELETE FROM relations WHERE relations.class_id = ? AND relations.student_id = ?", [class_id, student_id], function(err, result) {
+                // Checking for errors
+                if (err) throw err;
+                // Checking the data
+                if (result.affectedRows > 0) {
+                    // Success!
+                    res.json({
+                        stat: 1
+                    });
 
+                } else if (result.affectedRows < 1) {
+                    // Failure
+                    res.json({
+                        stat: 0,
+                        str: "There was an issue removing this user from this class"
+                    });
+                }
+
+            });
+
+        } else if (rows.length < 1) {
+            // User doesn't own it
+            res.json({
+                stat: 0,
+                str: "You do not have permission to edit this class"
+            });
+
+        }
+
+    });});
+
+//////////////////////////////////////////////////////////////////////
+// ROUTES FOR SEARCHING FOR STUDENTS
+//////////////////////////////////////////////////////////////////////
 app.get('/student-search', ensureAuthenticationAPI, function(req, res) {
 
     // Getting data from the request
@@ -631,10 +653,11 @@ app.get('/student-search', ensureAuthenticationAPI, function(req, res) {
         res.json({
             data: rows
         });
-    });
+    });});
 
-});
-
+//////////////////////////////////////////////////////////////////////
+// ROUTES FOR EDITING TASKS
+//////////////////////////////////////////////////////////////////////
 app.get('/tasks', ensureAuthenticationAPI, function(req, res) {
     // Querying the database for Tasks
     db.query("SELECT tasks.task_name, tasks.task_desc, tasks.date_due, tasks.id, tasks.date_set, classes.class_name 'class_name' FROM tasks, classes WHERE tasks.class_id = classes.id AND tasks.set_by_id = ? ORDER BY tasks.date_set DESC", req.user.id, function(err, rows, fields) {
@@ -642,8 +665,7 @@ app.get('/tasks', ensureAuthenticationAPI, function(req, res) {
         res.json({
             task_data: rows
         });
-    });
-});
+    });});
 
 app.delete('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
 
@@ -666,8 +688,7 @@ app.delete('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
 
         }
 
-    });
-});
+    });});
 
 app.put('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
     // Put request to update a task
@@ -725,8 +746,7 @@ app.put('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
             }
         });
 
-    }
-});
+    }});
 
 app.listen(port, function() {
     console.log('http://127.0.0.1:' + port + '/');
@@ -739,5 +759,4 @@ function gen_code(user_id) {
         code = new_id.toString(36),
         code_sub = code.substring(0, 5);
     // Returning new Code
-    return code_sub;
-}
+    return code_sub;}

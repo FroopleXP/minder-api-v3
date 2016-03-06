@@ -70,27 +70,28 @@ $(document).ready(function() {
 
 		// Removing the user
 		$.ajax({
-			method: 'POST',
-			url: 'php/remove_user_from_class_script.php',
-			data: {
-				user_id: to_remove_id
-			},
+			method: 'DELETE',
+			url: '/enroled/' + class_id + '/' + to_remove_id,
 			timeout: 5000,
 			success: function(data) {
-				var data = JSON.parse(data);
-				if (data['stat'] == 1) {
+
+				if (data.stat == 1) {
 
 					that.parent().fadeOut("2000", function() {
+
 						var curr_count_var = parseInt(curr_count.text());
 						var new_count = curr_count_var - 1;
+
 						if (new_count == 0) {
 							$("#enroled_students").prepend("<tr><td>No students enroled</td></tr>");
 						}
+
 						curr_count.text(new_count);
+
 					});
 
-				} else if (data['stat'] == 0) {
-					alert(data['str']);
+				} else if (data.stat == 0) {
+					alert(data.str);
 				}
 			},
 			error: function(data) {
@@ -119,29 +120,30 @@ $(document).ready(function() {
 			timeout: 5000,
 			success: function(data) {
 
-				// if (data.stat == 1) {
-				//
-				// 	var currently_enroled = $("#enroled_students");
-				//
-				// 	// Removing the User from the list
-				// 	that.parent().fadeOut("2000", function() {
-				// 		var curr_count_var = parseInt(curr_count.text());
-				// 		var new_count = curr_count_var + 1;
-				//
-				// 		// Checking if this is the first record
-				// 		if (curr_count_var < 1) {
-				// 			currently_enroled.empty();
-				// 		}
-				//
-				// 		curr_count.text(new_count);
-				//
-				// 		// Adding the user to currently enroled
-				// 		currently_enroled.prepend("<tr><td>" + data['data']['user_name'] + "<button class='btn btn-danger pull-right' data='" + data['data']['user_id'] + "' title='Remove " + data['data']['user_name'] + " from this class'>Remove</button></td></tr>");
-				// 	});
-				//
-				// } else if (data['stat'] == 0) {
-				// 	alert(data['str']);
-				// }
+				if (data.stat == 1) {
+				
+					var currently_enroled = $("#enroled_students");
+				
+					// Removing the User from the list
+					that.parent().fadeOut("2000", function() {
+
+						var curr_count_var = parseInt(curr_count.text());
+						var new_count = curr_count_var + 1;
+				
+						// Checking if this is the first record
+						if (curr_count_var < 1) {
+							currently_enroled.empty();
+						}
+				
+						curr_count.text(new_count);
+				
+						// Adding the user to currently enroled
+						currently_enroled.prepend("<tr><td>" + data.user_name + "<button class='btn btn-danger pull-right' data='" + data.user_id + "' title='Remove " + data.user_name + " from this class'>Remove</button></td></tr>");
+					});
+				
+				} else if (data.stat == 0) {
+					alert(data.str);
+				}
 
 				console.log(data);
 
