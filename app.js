@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var moment = require('moment');
 var db = require('./mysql_conn.js');
+var crypto = require('crypto');
 
 // CSURF CSRF Protection
 var csurf = require('csurf');
@@ -48,9 +49,11 @@ passport.use(new passportLocal.Strategy(function(email, password, done) {
         if (rows.length < 1) { // No user
             return done(null, false, {message: 'User not found!'});
         } else if (rows.length > 0) { // There's a user
+
             // Getting the data
             var email_db = rows[0]['email'],
                 password_db = rows[0]['password'];
+
             // Checking the credentials
             if (email !== email_db) { // Email is not correct
                 return done(null, false, {message: 'Invalid Email'});
@@ -504,6 +507,8 @@ app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
         task_due_date = xssFilters.inHTMLData(req.body.task_due_date),
         class_id = xssFilters.inHTMLData(req.body.class);
 
+    console.log(task_due_date);
+
     // Validating the data
     if (validator.isNull(task_name) || validator.isNull(task_desc) || validator.isNull(task_due_date) || validator.isNull(class_id)) {
         // Not all filled in
@@ -519,7 +524,7 @@ app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
             str: "Description and name must be longer than " + vali_str_opt.min + " characters"
         });
 
-    } else if (!moment(task_due_date).isValid()) {
+    } else if (!moment(task_due_date, ["MM-DD-YYYY"]).isValid()) {
         // Date is not valid
         res.json({
             stat: 0,
@@ -542,8 +547,8 @@ app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
                 // That class does exist, see if the User owns is
                 if (rows[0]['owner_id'] === req.user.id) {
                     // All good, let's create the object to insert into database
-                    var date_set = moment().unix(),
-                        date_due = moment(task_due_date).unix();
+                    var date_set = moment().format('l'),
+                        date_due = task_due_date;
 
                     var new_task = {
                         id: null,
@@ -786,7 +791,7 @@ app.put('/edit-task/:task_id', ensureAuthenticationAPI, function(req, res) {
             str: "Description and name must be longer than " + vali_str_opt.min + " characters"
         });
 
-    } else if (!moment(task_due_date).isValid()) {
+    } else if (!moment(task_due_date, ["MM-DD-YYYY"]).isValid()) {
         // Date is not valid
         res.json({
             stat: 0,
