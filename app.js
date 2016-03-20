@@ -6,6 +6,9 @@ var expressSession = require('express-session');
 var moment = require('moment');
 var db = require('./mysql_conn.js');
 
+// CSURF CSRF Protection
+var csurf = require('csurf');
+
 // Moment.js
 moment().format();
 
@@ -20,7 +23,7 @@ var vali_str_opt = {
 }
 
 var app = express();
-var port = process.env.PORT || 1337;
+var port = process.env.PORT || 80;
 
 // Requiring passport
 var passport = require('passport');
