@@ -37,7 +37,16 @@ app.use("/views", express.static(__dirname + '/views'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(expressSession({ secret: 'casiodaemon',  resave: true, saveUninitialized: true }));
+app.use(expressSession({ 
+    secret: 'casiodaemon',  
+    resave: true, 
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 60000
+    },
+    rolling: true 
+}));
+
 
 // Setting up Passport
 app.use(passport.initialize());
