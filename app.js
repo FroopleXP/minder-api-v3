@@ -42,7 +42,7 @@ app.use(expressSession({
     resave: true, 
     saveUninitialized: true,
     cookie: {
-        maxAge: 60000
+        maxAge: 2592000000 * 12
     },
     rolling: true 
 }));
