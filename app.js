@@ -24,7 +24,7 @@ var vali_str_opt = {
 }
 
 var app = express();
-var port = process.env.PORT || 80;
+var port = process.env.PORT || 8080;
 
 // Requiring passport
 var passport = require('passport');
@@ -37,14 +37,14 @@ app.use("/views", express.static(__dirname + '/views'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(expressSession({ 
-    secret: 'casiodaemon',  
-    resave: true, 
+app.use(expressSession({
+    secret: 'casiodaemon',
+    resave: true,
     saveUninitialized: true,
     cookie: {
         maxAge: 2592000000 * 12
     },
-    rolling: true 
+    rolling: true
 }));
 
 
