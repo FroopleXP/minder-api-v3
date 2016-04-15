@@ -736,7 +736,7 @@ app.get('/student-search', ensureAuthenticationAPI, function(req, res) {
         search_query = req.query.search_query;
 
     // Searching for the Student
-    db.query("SELECT std_users.stu_full_name, std_users.stu_id FROM std_users where std_users.stu_id NOT IN (select relations.student_id from relations where relations.class_id = ?) AND std_users.stu_lname LIKE ? AND std_users.stu_estab LIKE ?", [class_id, search_query, req.user.estab_belongs_to], function(err, rows, fields) {
+    db.query("SELECT std_users.stu_full_name, std_users.stu_id FROM std_users where std_users.stu_id NOT IN (select relations.student_id from relations where relations.class_id = ?) AND std_users.stu_lname LIKE ? AND std_users.stu_estab = ?", [class_id, search_query, req.user.estab_id], function(err, rows, fields) {
         if (err) throw err;
         res.json({
             data: rows
