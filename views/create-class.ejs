@@ -29,7 +29,7 @@
 					<!-- Checking if a warning exist -->
 					<% if (typeof warn_msg !== 'undefined') { %>
 						<center><p class="err_msg"><%= warn_msg %></p></center>
-					<% } %> 
+					<% } %>
 
 					<!-- Form for creating a new class -->
 					<form id="new_class">
@@ -48,7 +48,7 @@
 				<!-- Container for current classes -->
 				<div class="col-md-4">
 					<h3>
-						Current Classes 
+						Current Classes
 					</h3><br />
 
 					<div class="panel panel-default class_viewer">
@@ -60,6 +60,7 @@
 				</div>
 
 			</div>
+			<%- include('./includes/footer.ejs'); %>
 		</div>
 
 		<script type="text/javascript" src="./views/scripts/save_class.js"></script>
