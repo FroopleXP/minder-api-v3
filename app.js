@@ -264,6 +264,25 @@ app.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');});
 
+// Estab password
+app.get('/estab-password', function(req, res) {
+    if (req.isAuthenticated()) {
+
+        // Getting the password for the establishment
+        db.query('SELECT establishments.estab_pass FROM establishments WHERE estab_id = ?', req.user.estab_id, function(err, rows, fields) {
+            if (err) throw err;
+            if (rows.length < 1) { // No data
+                res.redirect("/logout");
+            } else if (rows.length > 0) {
+                res.render('estab-password', { title: "Minder | Establishment Password", estab_pass: rows[0].estab_pass });
+            }
+        });
+
+    } else {
+        res.redirect("/login");
+    }
+});
+
 // Login
 app.get('/login', function(req, res) {
     res.render('login', { title: "Minder | Login" });

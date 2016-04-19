@@ -28,7 +28,7 @@
 
 					<!-- Checking if a warning exist -->
 					<% if (typeof warn_msg !== 'undefined') { %>
-						<center><p class="err_msg"><%= warn_msg %></p></center>
+						<div class="alert alert-info" role="alert"><%= warn_msg %></div>
 					<% } %>
 
 					<!-- Form for creating a new class -->
