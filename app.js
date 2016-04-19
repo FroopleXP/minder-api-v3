@@ -125,7 +125,7 @@ app.get('/', function(req, res) {
     if (req.isAuthenticated()) {
         // They are!
         res.render('index', {
-            title: "Home",
+            title: "Minder | Home",
             user: req.user
         });
     } else if (!req.isAuthenticated()) {
@@ -136,7 +136,7 @@ app.get('/', function(req, res) {
 // Register
 app.get('/register', function(req, res) {
     // Used to register the establishment
-    res.render('register_new', { title: "Register" });});
+    res.render('register_new', { title: "Minder | Register" });});
 
 app.post('/register', function(req, res) {
 
@@ -266,7 +266,7 @@ app.get('/logout', function(req, res) {
 
 // Login
 app.get('/login', function(req, res) {
-    res.render('login', { title: "Login" });
+    res.render('login', { title: "Minder | Login" });
 });
 
 app.post('/login', function(req, res, next) {
@@ -274,7 +274,7 @@ app.post('/login', function(req, res, next) {
         if (err) {
             return next(err);
         } else if (!user) {
-            return res.render("login", { title: "Failed to login!", err_msg: info.message });
+            return res.render("login", { title: "Minder | Failed to login!", err_msg: info.message });
         } else {
             req.login(user, function(err) {
                 if (err) {
@@ -293,9 +293,9 @@ app.get('/create-task', function(req, res) {
             if (err) throw err;
             // Checking result
             if (rows.length > 0) { // There is data
-                res.render("create-task.ejs", { title: "Create a new task" });
+                res.render("create-task.ejs", { title: "Minder | Create a new task" });
             } else if (rows.length < 1) { // No data
-                res.render("create-class.ejs", { title: "Create a new class", warn_msg: "You must create a class before creating any tasks!" });
+                res.render("create-class.ejs", { title: "Minder | Create a new class", warn_msg: "You must create a class before creating any tasks!" });
             }
         });
     } else if (!req.isAuthenticated()) {
@@ -311,7 +311,7 @@ app.get('/create-task', function(req, res) {
 
 app.get('/create-class', function(req, res) {
     if (req.isAuthenticated()) {
-        res.render("create-class.ejs", { title: "Create a new Class" });
+        res.render("create-class.ejs", { title: "Minder | Create a new Class" });
     } else if (!res.isAuthenticated()) {
         res.redirect("/login");
     }});
@@ -338,7 +338,7 @@ app.get('/edit-task/:task_id', function(req, res) {
                     due_date: rows[0]['date_due']
                 }
 
-                res.render("edit-task.ejs", { task: task_info, title: "Editing Task" });
+                res.render("edit-task.ejs", { task: task_info, title: "Minder | Editing a Task" });
 
             }
 
@@ -371,7 +371,7 @@ app.get('/edit-class/:class_id', function(req, res) {
                     class_id: rows[0]['id']
                 }
 
-                res.render("edit-class", { title: "Edit class", class_info: class_object });
+                res.render("edit-class", { title: "Minder | Edit class", class_info: class_object });
             }
         });
 
