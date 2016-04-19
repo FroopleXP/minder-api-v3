@@ -7,15 +7,15 @@
 
 		<!-- main page container -->
 		<div class="container-fluid">
-			
+
 				<!-- Login form -->
 				<div class="row" style="margin-top: 20px;">
-					<div class="col-lg-4 col-md-4"></div>
-					<div class="col-lg-4 col-md-4">
+					<div class="col-lg-5 col-md-4 col-sm-4 col-xs-1"></div>
+					<div class="col-lg-2 col-md-4 col-sm-4 col-xs-10">
 						<h1 style="text-align: center; margin-bottom: 20px;">MINDER</h1>
 						<% if (typeof err_msg !== 'undefined') { %>
 							<center><p class="err_msg"><%= err_msg %></p></center>
-						<% } %> 
+						<% } %>
 						<form id="login_form" method="POST" action="/login">
 							<div class="form-group">
 								<label for="email">Email address</label>
@@ -28,7 +28,7 @@
 							<button type="submit" class="btn btn-primary btn-block btn-lg" id="login_btn">Login</button>
 						</form>
 					</div>
-					<div class="col-lg-4 col-md-4"></div>
+					<div class="col-lg-5 col-md-4 col-sm-4 col-xs-1"></div>
 				</div>
 
 		</div>
