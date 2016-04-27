@@ -7,13 +7,6 @@
 		<script type="text/javascript" src="../views/scripts/edit_class.js"></script>
 		<script type="text/javascript" src="../views/scripts/student_search.js"></script>
 	</head>
-	<script type="text/javascript">
-		$(document).ready(function() {
-			$("#date_picker").datepicker({
-				minDate: 0
-			});
-		});
-	</script>
 	<body onload="get_classes('#class_viewer'); get_enroled(<%= class_info.class_id %>, '#enroled_students', '#curr_count');">
 
 		<%- include('./includes/menu.ejs'); %>

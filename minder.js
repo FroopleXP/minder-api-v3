@@ -11,7 +11,7 @@ var crypto = require('crypto');
 var csurf = require('csurf');
 
 // Moment.js
-moment().format();
+moment().format('YYYY-MM-DD');
 
 // Cleaning tools
 var xssFilters = require('xss-filters'),
@@ -535,8 +535,6 @@ app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
         task_due_date = xssFilters.inHTMLData(req.body.task_due_date),
         class_id = xssFilters.inHTMLData(req.body.class);
 
-    console.log(task_due_date);
-
     // Validating the data
     if (validator.isNull(task_name) || validator.isNull(task_desc) || validator.isNull(task_due_date) || validator.isNull(class_id)) {
         // Not all filled in
@@ -552,7 +550,7 @@ app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
             str: "Description and name must be longer than " + vali_str_opt.min + " characters"
         });
 
-    } else if (!moment(task_due_date, ["MM-DD-YYYY"]).isValid()) {
+    } else if (!moment(task_due_date, ["DD-MM-YYYY"]).isValid()) {
         // Date is not valid
         res.json({
             stat: 0,
@@ -595,6 +593,7 @@ app.post('/save-task', ensureAuthenticationAPI, function(req, res) {
                             stat: 1
                         });
                     });
+
                 } else if (rows.owner_id !== req.user.id) {
                     // User doesn't own it!
                     res.json({

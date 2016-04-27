@@ -85,13 +85,15 @@ function get_tasks(to_append) {
 				// Working out if a task is overdue
 
 				var due_timestamp = data.task_data[index]['date_due'],
-					curr_timestamp = moment().valueOf(),
-					date_due = moment.unix(due_timestamp).format("MMMM Do YYYY");
+					time_added = moment(due_timestamp).add(12, 'h'),
+					date_due = time_added.format('ll'),
+					time_now = moment(),
+					days_left = time_added.fromNow();
 
 				tasks += "<tr><td><a href='/edit-task/" + data.task_data[index]['id'] + "'>";
 				tasks += "<b>" + data.task_data[index]['task_name'] + " - (" + data.task_data[index]['class_name'] + ")</b><span class='glyphicon glyphicon-pencil' style='margin-left: 10px; font-size: 0.9em; color: rgba(0, 0, 0, 0.7);'></span></a>";
 				tasks += "<p>" + data.task_data[index]['task_desc'] + "</p>";
-				tasks += "<small>Due by: " + date_due + " ()</small></td></tr/>";
+				tasks += "<small>Due by: " + date_due + " (" + days_left + ")</small></td></tr/>";
 			}
 		}
 		// Adding the data
