@@ -1,23 +1,23 @@
 {
-  "name": "Minder-Api-V3",
-  "version": "1.0.3",
-  "description": "The new Minder API",
-  "main": "app.js",
+  "name": "minder-api-v3",
+  "version": "2.1.0",
+  "description": "Minder API",
+  "main": "minder.js",
   "dependencies": {
-    "body-parser": "~1.15.0",
-    "cookie-parser": "~1.4.1",
-    "csurf": "^1.8.3",
-    "ejs": "~2.4.1",
-    "express": "~4.13.4",
-    "express-session": "~1.13.0",
-    "jade": "~1.11.0",
-    "moment": "~2.11.2",
-    "mysql": "~2.10.2",
-    "passport": "~0.3.2",
-    "passport-http": "~0.3.0",
-    "passport-local": "~1.0.0",
-    "validator": "~5.0.0",
-    "xss-filters": "~1.2.6"
+      "body-parser": "~1.15.0",
+      "cookie-parser": "~1.4.1",
+      "csurf": "^1.8.3",
+      "ejs": "~2.4.1",
+      "express": "~4.13.4",
+      "express-session": "~1.13.0",
+      "jade": "~1.11.0",
+      "moment": "~2.11.2",
+      "mysql": "~2.10.2",
+      "passport": "~0.3.2",
+      "passport-http": "~0.3.0",
+      "passport-local": "~1.0.0",
+      "validator": "~5.0.0",
+      "xss-filters": "~1.2.6"
   },
   "devDependencies": {},
   "scripts": {
@@ -25,11 +25,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/FroopleXP/minder-api-v3"
+    "url": "git+https://github.com/FroopleXP/minder-api-v3.git"
   },
+  "keywords": [
+    "Minder",
+    "Connor",
+    "Edwards",
+    "Noval",
+    "Studios",
+    "API"
+  ],
   "author": "Connor Edwards",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/FroopleXP/minder-api-v3/issues"
-  }
+  },
+  "homepage": "https://github.com/FroopleXP/minder-api-v3#readme"
 }
