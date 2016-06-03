@@ -133,6 +133,99 @@ app.get('/', function(req, res) {
         res.redirect("login");
     }});
 
+// Registering a new user
+app.get('/new-user', function(req, res) {
+    // Rendering the new-user Page
+    if (req.isAuthenticated()) {
+        res.render('new_user', { title: "Minder | Add an administrator" });
+    } else if (!req.isAuthenticated()) {
+        res.redirect("login");
+    }
+});
+
+// Post to create a new user
+app.post('/new-user', ensureAuthenticationAPI, function(req, res) {
+    // Getting the form data and cleaning it of XSS scripts,
+    var firstname = xssFilters.inHTMLData(req.body.fname),
+        lastname = xssFilters.inHTMLData(req.body.lname),
+        email = xssFilters.inHTMLData(req.body.email),
+        password = xssFilters.inHTMLData(req.body.password),
+        password_conf = xssFilters.inHTMLData(req.body.password_conf);
+
+    // Validating the data (Length)
+    if (validator.isNull(firstname) || validator.isNull(lastname) || validator.isNull(email) || validator.isNull(password) || validator.isNull(password_conf)) {
+        res.json({
+            stat: 0,
+            message: "You must fill out all fields!"
+        });
+    } else if (!validator.isEmail(email)) {
+        res.json({
+            stat: 0,
+            message: "Please enter a valid Email"
+        });
+    } else if (!validator.isLength(password, vali_str_opt)) {
+        res.json({
+            stat: 0,
+            message: "Password must be longer than " + vali_str_opt.min + " characters"
+        });
+    } else if (password != password_conf) {
+        res.json({
+            stat: 0,
+            message: "Passwords do not match"
+        });
+    } else {
+
+        // Checking the database if the User exists
+        db.query('SELECT admin_users.id FROM admin_users WHERE admin_users.email = ?', email, function(err, rows, fields) {
+            if (err) throw err; // Throwing the error to the Console
+            // Checking if user exists
+            if (rows.length < 1) {
+                // User doesn't exist, add them to the database
+                // Encrypting password
+                var password_hash = password,
+                    name_com = firstname + " " + lastname;
+
+                // Preparing the object to insert
+                var user_model = {
+                    id: null,
+                    fname: firstname,
+                    lname: lastname,
+                    full_name: name_com,
+                    email: email,
+                    password: password_hash,
+                    estab_belongs_to: req.user.estab_id
+                }
+                // Inserting the user
+                var user_ins = db.query('INSERT INTO admin_users SET ?', user_model, function(err, result) {
+                    if (err) throw err; // Throwing error, if there is one
+                    res.json({
+                        stat: 1,
+                        message: "User has been added!"
+                    });
+                });
+
+            } else if (rows.length > 0) {
+                // User already registered
+                res.json({
+                    stat: 0,
+                    message: "Sorry, that email has already been registered."
+                });
+            }
+        });
+    }
+});
+
+// Change password
+app.get('/change-password', function(req, res) {
+
+    if (req.isAuthenticated()) {
+        res.render('change-password', { title: "Minder | Change Password" });
+    } else {
+        res.redirect('login');
+    }
+
+});
+
 // Register
 app.get('/register', function(req, res) {
     // Used to register the establishment
@@ -258,7 +351,8 @@ app.post('/register', function(req, res) {
                 });
             }
         });
-    }});
+    }
+});
 
 app.get('/logout', function(req, res) {
     req.logout();
