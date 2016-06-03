@@ -37,9 +37,10 @@
 
 				<!-- Container for creating a new task -->
 				<div class="col-md-8">
-					<h3>
-						Editing task "<%= task.task_name %>" <button class="btn btn-danger pull_right" id="task_delete_button">Delete</button>
-					</h3><br />
+					<p class="sub-heading-container">
+						<span class="sub-heading">Editing tasks "<%= task.task_name %>"</span>
+						<button class="btn btn-danger pull_right" style="margin-left: 20px;" id="task_delete_button">Delete</button>
+					</p><br />
 
 					<!-- Form for creating a new task -->
 					<form id="edit_task">
@@ -65,9 +66,9 @@
 
 				<!-- Container for current classes -->
 				<div class="col-md-4">
-					<h3>
+					<p class="sub-heading">
 						Other tasks
-					</h3><br />
+					</p><br />
 
 					<div class="panel panel-default class_viewer">
 						<!-- Table for previewing the classes -->

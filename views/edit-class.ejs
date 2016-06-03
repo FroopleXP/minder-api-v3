@@ -28,9 +28,10 @@
 
 				<!-- Container for editing a class -->
 				<div class="col-md-8">
-					<h3>
-						Editing class "<%= class_info.class_name %>" <button class="btn btn-danger pull_right" id="class_delete_button">Delete</button>
-					</h3><br />
+					<p class="sub-heading-container">
+						<span class="sub-heading">Editing class "<%= class_info.class_name %>"</span>
+						<button class="btn btn-danger pull_right" style="margin-left: 20px;" id="class_delete_button">Delete</button>
+					</p><br />
 
 					<!-- Form for creating a new task -->
 					<form id="edit_class">
@@ -52,7 +53,9 @@
 							<div class="input-group">
     							<input type="text" class="form-control" id="search_box" name="query" autocomplete="off" placeholder="Search for students...">
 								<span class="input-group-btn">
-									<button class="btn btn-primary" type="submit">Search</button>
+									<button class="btn btn-primary btn-search">
+										<span class="glyphicon glyphicon-search">Hello</span>
+									</button>
 								</span>
 							</div>
 						</form>
@@ -83,9 +86,9 @@
 
 				<!-- Container for current classes -->
 				<div class="col-md-4">
-					<h3>
+					<p class="sub-heading">
 						Other Classes
-					</h3><br />
+					</p><br />
 
 					<div class="panel panel-default class_viewer">
 						<!-- Table for previewing the classes -->

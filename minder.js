@@ -217,13 +217,19 @@ app.post('/new-user', ensureAuthenticationAPI, function(req, res) {
 
 // Change password
 app.get('/change-password', function(req, res) {
-
     if (req.isAuthenticated()) {
         res.render('change-password', { title: "Minder | Change Password" });
     } else {
         res.redirect('login');
     }
+});
 
+app.post('/change-password', function(req, res) {
+    // Getting the data
+    var current_password = xssFilters.inHTMLData(req.body.current_password),
+        new_password_conf = xssFilters.inHTMLData(req.body.new_password_conf),
+        new_password = xssFilters.inHTMLData(req.body.new_password);
+    console.log(current_password + " " + new_password_conf + " " + new_password);
 });
 
 // Register
@@ -363,12 +369,12 @@ app.get('/estab-password', function(req, res) {
     if (req.isAuthenticated()) {
 
         // Getting the password for the establishment
-        db.query('SELECT establishments.estab_pass FROM establishments WHERE estab_id = ?', req.user.estab_id, function(err, rows, fields) {
+        db.query('SELECT establishments.estab_pass, establishments.estab_name FROM establishments WHERE estab_id = ?', req.user.estab_id, function(err, rows, fields) {
             if (err) throw err;
             if (rows.length < 1) { // No data
                 res.redirect("/logout");
             } else if (rows.length > 0) {
-                res.render('estab-password', { title: "Minder | Establishment Password", estab_pass: rows[0].estab_pass });
+                res.render('estab-password', { title: "Minder | Establishment Password", estab_info: rows[0] });
             }
         });
 
