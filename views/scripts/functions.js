@@ -109,12 +109,12 @@ function show_noti(stat, msg) {
 	// Checking the status
 	switch (stat) {
 		case 0:
-			noti_box.removeClass("alert-success");
-			noti_box.addClass("alert-danger");
+			noti_box.removeClass("alert alert-success");
+			noti_box.addClass("alert alert-danger");
 			break;
 		case 1:
-			noti_box.removeClass("alert-danger");
-			noti_box.addClass("alert-success");
+			noti_box.removeClass("alert alert-danger");
+			noti_box.addClass("alert alert-success");
 			break;
 		default:
 			noti_box.hide();
