@@ -12,7 +12,7 @@
 				<div class="row" style="margin-top: 20px;">
 					<div class="col-lg-4 col-md-3 col-sm-3"></div>
 					<div class="col-lg-4 col-md-6 col-sm-6">
-						<img src="./views/images/logo.png" class="logo">
+						<img src="./views/images/logo_w_sub_admin.png" class="logo">
 						<% if (typeof err_msg !== 'undefined') { %>
 							<div class="alert alert-danger" role="alert"><%= err_msg %></div>
 						<% } %>
@@ -21,17 +21,17 @@
 								<form id="login_form" method="POST" action="/login">
 									<div class="form-group">
 										<label for="email">Email address</label>
-										<input type="email" class="form-control" name="username" placeholder="Email" autocomplete="off">
+										<input type="email" class="form-control login_input" name="username" placeholder="Email" autocomplete="off">
 									</div>
 									<div class="form-group">
 										<label for="password">Password</label>
-										<input type="password" class="form-control" name="password" placeholder="Password" autocomplete="off">
+										<input type="password" class="form-control login_input" name="password" placeholder="Password" autocomplete="off">
 									</div>
 							</div>
 							<div class="panel-footer">
 								<div class="form-group">
 									<p>
-										<button class="btn btn-primary btn-right" type="submit" id="reg_btn">Login</button>
+										<button class="btn btn-warning btn-right" type="submit" id="reg_btn">Login</button>
 										<a href="/register">
 											<button class="btn btn-danger btn-right">Register</button>
 										</a>
