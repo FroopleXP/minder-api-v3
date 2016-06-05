@@ -30,6 +30,9 @@ var port = process.env.PORT || 8080;
 var passport = require('passport');
 var passportLocal = require('passport-local');
 
+// Hashing passwords
+var hash = require('./hash/hash.js');
+
 // Setting the renderer
 app.set('view engine', 'ejs');
 
@@ -66,7 +69,7 @@ passport.use(new passportLocal.Strategy(function(email, password, done) {
             // Checking the credentials
             if (email !== email_db) { // Email is not correct
                 return done(null, false, {message: 'Invalid Email'});
-            } else if (password !== password_db) { // Password is not correct
+            } else if (!hash.validPassword(password, password_db)) { // Password is not correct
                 return done(null, false, {message: 'Invalid Password'});
             } else {
                 // Validation success, create the user model
@@ -182,8 +185,10 @@ app.post('/new-user', ensureAuthenticationAPI, function(req, res) {
             if (rows.length < 1) {
                 // User doesn't exist, add them to the database
                 // Encrypting password
-                var password_hash = password,
+                var password_hash = hash.generateHash(password),
                     name_com = firstname + " " + lastname;
+
+                console.log(password_hash);
 
                 // Preparing the object to insert
                 var user_model = {
@@ -242,6 +247,8 @@ app.post('/change-password', function(req, res) {
             message: "You new password must be different from your old one."
         });
     } else if (new_password === new_password_conf) {
+        // Generating password
+        new_password = hash.generateHash(password);
         db.query("update admin_users set admin_users.password = ? where admin_users.id = ? and admin_users.password = ?", [new_password, req.user.id, current_password], function(err, results) {
             if (err) {
                 console.log(err);
@@ -323,8 +330,10 @@ app.post('/register', function(req, res) {
                     if (rows.length < 1) {
 
                         // Encrypting password
-                        var password_hash = password,
+                        var password_hash = hash.generateHash(password),
                             name_com = firstname + " " + lastname;
+
+                        console.log(password_hash);
 
                         // Preparing the object to insert
                         var user_model = {
