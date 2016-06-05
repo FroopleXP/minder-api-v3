@@ -247,29 +247,53 @@ app.post('/change-password', function(req, res) {
             message: "You new password must be different from your old one."
         });
     } else if (new_password === new_password_conf) {
-        // Generating password
-        new_password = hash.generateHash(password);
-        db.query("update admin_users set admin_users.password = ? where admin_users.id = ? and admin_users.password = ?", [new_password, req.user.id, current_password], function(err, results) {
+
+        // Getting the password
+        db.query("select password from admin_users where admin_users.id = ?", [req.user.id], function(err, rows, fields) {
             if (err) {
-                console.log(err);
                 res.json({
                     status: 0,
-                    message: "Something went wrong... Please try again later."
+                    message: "There was a problem contacting the database"
                 });
             } else if (!err) {
-                // Checking the affected rows
-                if (results.affectedRows > 0) { // Something has been changed
-                    res.json({
-                        status: 1
-                    });
-                } else if (results.affectedRows < 1) { // Nothing happened, I swear.
+                var password_db = rows[0]['password'];
+                // Verifying the password
+                if (!hash.validPassword(current_password, password_db)) {
+                    // Password is not valid
                     res.json({
                         status: 0,
-                        message: "Please check your current password."
+                        message: "Your old password is incorrect"
+                    });
+                } else {
+                    // Password is valid
+                    // Hashing the new password
+                    new_password = hash.generateHash(new_password);
+
+                    db.query("update admin_users set admin_users.password = ? where admin_users.id = ?", [new_password, req.user.id], function(err, results) {
+                        if (err) {
+                            console.log(err);
+                            res.json({
+                                status: 0,
+                                message: "Something went wrong... Please try again later."
+                            });
+                        } else if (!err) {
+                            // Checking the affected rows
+                            if (results.affectedRows > 0) { // Something has been changed
+                                res.json({
+                                    status: 1
+                                });
+                            } else if (results.affectedRows < 1) { // Nothing happened, I swear.
+                                res.json({
+                                    status: 0,
+                                    message: "Failed to change password!"
+                                });
+                            }
+                        }
                     });
                 }
             }
         });
+
     }
 
 });
@@ -1007,4 +1031,5 @@ function gen_code(user_id) {
         code = new_id.toString(36),
         code_sub = code.substring(0, 5);
     // Returning new Code
-    return code_sub;}
+    return code_sub
+;}
