@@ -179,7 +179,7 @@ hr {
 	border-radius: 3px !important;
 	font-weight: bold;
 	color: #fff;
-	margin-top: -20px !important;
+	margin-top: 10px !important;
 }
 .alert-danger {
 	background-color: #e74c3c !important;
@@ -191,6 +191,12 @@ hr {
 	background-color: #2ecc71 !important;
 	border: 3px solid #27ae60 !important;
 	text-shadow: 2px 2px #27ae60;
+}
+/*Blue*/
+.alert-info {
+	background-color: #3498db !important;
+	border: 3px solid #2980b9 !important;
+	text-shadow: 2px 2px #2980b9;
 }
 
 /*Custom login page design*/

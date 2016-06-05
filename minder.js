@@ -229,7 +229,42 @@ app.post('/change-password', function(req, res) {
     var current_password = xssFilters.inHTMLData(req.body.current_password),
         new_password_conf = xssFilters.inHTMLData(req.body.new_password_conf),
         new_password = xssFilters.inHTMLData(req.body.new_password);
-    console.log(current_password + " " + new_password_conf + " " + new_password);
+
+    // Start validating the data
+    if (new_password !== new_password_conf) {
+        res.json({
+            status: 0,
+            message: "Your new passwords do not match"
+        });
+    } else if (new_password === current_password) {
+        res.json({
+            status: 0,
+            message: "You new password must be different from your old one."
+        });
+    } else if (new_password === new_password_conf) {
+        db.query("update admin_users set admin_users.password = ? where admin_users.id = ? and admin_users.password = ?", [new_password, req.user.id, current_password], function(err, results) {
+            if (err) {
+                console.log(err);
+                res.json({
+                    status: 0,
+                    message: "Something went wrong... Please try again later."
+                });
+            } else if (!err) {
+                // Checking the affected rows
+                if (results.affectedRows > 0) { // Something has been changed
+                    res.json({
+                        status: 1
+                    });
+                } else if (results.affectedRows < 1) { // Nothing happened, I swear.
+                    res.json({
+                        status: 0,
+                        message: "Please check your current password."
+                    });
+                }
+            }
+        });
+    }
+
 });
 
 // Register

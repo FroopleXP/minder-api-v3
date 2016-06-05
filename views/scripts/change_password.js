@@ -16,8 +16,7 @@ $(document).ready(function() {
             timeout: 10000,
             data: form,
             success: function(data) {
-                var data = JSON.parse(data);
-				switch (data['stat']) {
+				switch (data.status) {
 					case 1:
 
 						pass_change_form[0].reset();
@@ -28,7 +27,7 @@ $(document).ready(function() {
 					case 0:
 
                         // Resetting Password button
-						alert(data['str']);
+						alert(data.message);
                         change_btn.attr('disabled', false);
                         change_btn.text("Change Password");
 
