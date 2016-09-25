@@ -499,7 +499,7 @@ app.get('/create-task', function(req, res) {
 app.get('/create-class', function(req, res) {
     if (req.isAuthenticated()) {
         res.render("create-class.ejs", { title: "Minder | Create a new Class" });
-    } else if (!res.isAuthenticated()) {
+    } else if (!req.isAuthenticated()) {
         res.redirect("/login");
     }});
 
