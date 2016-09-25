@@ -597,8 +597,7 @@ app.post('/save-class', ensureAuthenticationAPI, function(req, res) {
         var class_model = {
             id: null,
             owner_id: req.user.id,
-            class_name: class_name,
-            date_created: 'CURRENT_TIMESTAMP'
+            class_name: class_name
         }
         db.query('INSERT INTO classes SET ?', class_model, function(err, result) {
             // Checking if was added successfully
