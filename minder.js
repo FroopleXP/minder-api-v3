@@ -820,8 +820,7 @@ app.put('/enroled/:class_id/:student_id', ensureAuthenticationAPI, function(req,
                     var enrol_model = {
                         id: null,
                         class_id: class_id,
-                        student_id: student_id,
-                        joined_class: 'CURRENT_TIMESTAMP'
+                        student_id: student_id
                     }
                     // Inserting to the Database
                     db.query("INSERT INTO relations SET ?", enrol_model, function(err, result) {
